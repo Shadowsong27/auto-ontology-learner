@@ -38,6 +38,11 @@ Common used algorithms are:
 
 http://www.aclweb.org/anthology/U09-1013
 
+implementation:
+
+https://github.com/hrs/python-tf-idf a very simple algo on how tf-idf works
+https://github.com/RaRe-Technologies/gensim production-level implementation for topical modelling
+
 ### Algorithm: TextRank
 
 https://web.eecs.umich.edu/%7Emihalcea/papers/mihalcea.emnlp04.pdf

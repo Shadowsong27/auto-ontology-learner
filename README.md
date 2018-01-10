@@ -1,7 +1,7 @@
 # auto-ontology-learner
 A Final Year Project.
 
-# References
+# Research and Preparation Notes
 
 ### Ontology Learning From Text
 
@@ -18,3 +18,10 @@ Maynard D., Li Y. and Peters W. (2008). NLP Techniques for Term Extraction and
 Ontology Population. Retrieved from
 https://pdfs.semanticscholar.org/5f4e/b3e0ee8e0e6e842d1b855bb6ef22dbc098e0.pdf
 
+# Implementation Logic
+
+# Novelty
+
+# Acknowledgement
+
+# Contribution as an open sourced project

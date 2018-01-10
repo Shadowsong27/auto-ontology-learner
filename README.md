@@ -1,4 +1,4 @@
-# auto-ontology-learner
+# auto-ontology-learner (temporary name)
 
 A Final Year Project.
 
@@ -12,7 +12,7 @@ Components breakdown:
 
 # Research and Preparation Notes
 
-## Ontology Learning From Text
+## Terms and Entities extraction
 
 Different approaches taken, mainly divided into two streams:
 
@@ -34,14 +34,17 @@ Common used algorithms are:
 2. TextRank [davidadamojr/TextRank](https://github.com/davidadamojr/TextRank/)
 3. RAKE [aneesha/RAKE](https://github.com/aneesha/RAKE) | [csurfer/rake-nltk](https://github.com/csurfer/rake-nltk)
 
+### Algorithm: tf-idf
+
+http://www.aclweb.org/anthology/U09-1013
+
 ### Algorithm: TextRank
 
 https://web.eecs.umich.edu/%7Emihalcea/papers/mihalcea.emnlp04.pdf
 
 ### Algorithm: Rapid Automatic Knowledge Extraction
 
-https://www.researchgate.net/publication/227988510_Automatic_Keyword_Extraction_from_Individual_Documents
-
+https://www.researchgate.net/publication/227988510_Automatic_Keyword_Extraction_from_Individual_Documents   
 
 # Implementation Logic
 

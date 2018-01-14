@@ -38,12 +38,16 @@ Common used algorithms are:
 
 ### Algorithm: tf-idf
 
-http://www.aclweb.org/anthology/U09-1013
+
 
 The article proposed the usage of TF-IDF algorithm to identify domain specific term, which then be applied to both text
 categorization and keywords extraction, despite the boost in performance is limited. To be consise, after generating the respective sets of TF-IDF scores for both general text and domain text, if the score from domain text is significantly higher than that of the general text (20% threshold stated in paper). 
 
 However, the project is targeting common English on websites which may not require the specifity in domain knowledge, but for websites like web pages of resturants or electronic store, they do have a topic difference. Thus, the idea of using tf-idf to identify the topic of websites and then the terms could be useful.
+
+-- 
+
+Kim S.N., Baldwin T., Kan M.Y. (2009) An Unsupervised Approach to Domain-Specific Term Extraction. Retrieved from http://www.aclweb.org/anthology/U09-1013
 
 implementation:
 

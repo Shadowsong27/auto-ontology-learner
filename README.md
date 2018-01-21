@@ -56,6 +56,30 @@ https://github.com/RaRe-Technologies/gensim production-level implementation for 
 
 ### Algorithm: TextRank
 
+Kleinberg’s HITS algorithm (Kleinberg, 1999) or Google’s PageRank (Brin and Page, 1998) relies on the collective knowledge
+of the `Graph` - WWW. In short, a graph-based ranking algorithm is a way of deciding on the importance of a vertex within a graph, by taking into account global information recursively computed from the entire graph, rather than relying only
+on local vertex-specific information.
+
+Traditionally on Directed graph -> natural of web pages
+Undirected graph -> more gradual convergence curve
+Weighted graph -> different from web where assume unweighted graph, converting text into graph invovles multi-referecences
+Text as graph -> words as vertices, semantic relation as edge
+
+Simplest approach: frequency criterion selection, but often lead to poor results. The state-of-art method is supervised learning
+approach, trained based on lexical text and domain knowledge text. from 1999 (Turney) where results are 29% to Hulth in 2003,
+where precision is doubled by adding linguistic knowledge (domain knowledge).
+
+co-occurrence: if two lexical appeared more than once together within the window of N words, they are linked.
+multi-keyword collapsing: if two keywords are adjacent
+
+sentence extraction: based on `similarity` in sentences -> content overlap -> refer to other sentences addressing the same
+concept, looks like a statistical summarisation for each sentence (in paper only described exact tokens, probably stemmed. for 
+certain syntatical category: verb, nouns and etc. Which i agree since the adj. does not contribute much in the similarty 
+between sentences, normalised by length of each sentence.
+
+
+However, we could apply synonym reference here to improve accuracy)
+
 https://web.eecs.umich.edu/%7Emihalcea/papers/mihalcea.emnlp04.pdf
 
 ### Algorithm: Rapid Automatic Knowledge Extraction
@@ -63,6 +87,9 @@ https://web.eecs.umich.edu/%7Emihalcea/papers/mihalcea.emnlp04.pdf
 https://www.researchgate.net/publication/227988510_Automatic_Keyword_Extraction_from_Individual_Documents   
 
 # Implementation Logic
+
+
+Performance evaluation: precision, recall and F-measure
 
 # Novelty
 

@@ -77,14 +77,20 @@ concept, looks like a statistical summarisation for each sentence (in paper only
 certain syntatical category: verb, nouns and etc. Which i agree since the adj. does not contribute much in the similarty 
 between sentences, normalised by length of each sentence.
 
+However, we could apply synonym reference here to improve accuracy. 
 
-However, we could apply synonym reference here to improve accuracy)
+Use this method to extract LCC in graph? so to cover all knowledge in text.
 
 https://web.eecs.umich.edu/%7Emihalcea/papers/mihalcea.emnlp04.pdf
 
 ### Algorithm: Rapid Automatic Knowledge Extraction
 
 https://www.researchgate.net/publication/227988510_Automatic_Keyword_Extraction_from_Individual_Documents   
+
+### Graph-based approach  
+
+http://www.talukdar.net/thesis/partha_thesis.pdf
+
 
 # Implementation Logic
 

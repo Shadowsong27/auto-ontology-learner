@@ -85,6 +85,24 @@ https://web.eecs.umich.edu/%7Emihalcea/papers/mihalcea.emnlp04.pdf
 
 ### Algorithm: Rapid Automatic Knowledge Extraction
 
+```
+While some keywords are likely to be evaluated as statistically discriminating
+within the corpus, keywords that occur in many documents within the corpus are
+not likely to be selected as statistically discriminating. Corpus-oriented methods
+also typically operate only on single words. This further limits the measurement of
+statistically discriminating words because single words are often used in multiple
+and different
+```
+-- cross-corpus methods limitation
+
+Really brilliant thinking but this will only perform well if the text are considered grammatically 
+accpetable. Free text on the webpages may contain stop words with certain randomness, and thus RAKE
+would not be helpful here. But the idea of using a common word delimiter to split the text into smaller chunk
+is the result of sharp observation, and it should be given credit. Similar approach may be found in general web pages,
+potentially from the HTML structure? After all we need to parse the web pages, and using a tree parser will ultimately get 
+the HTML tag, would it be helpful in indentifying the tags? Say all list tags might belong the same categories because
+the idea of using a list is to list similar information, but not necessarily true since it could also be various reasons for certain questions.
+
 https://www.researchgate.net/publication/227988510_Automatic_Keyword_Extraction_from_Individual_Documents   
 
 ### Graph-based approach  

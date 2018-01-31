@@ -105,10 +105,19 @@ the idea of using a list is to list similar information, but not necessarily tru
 
 https://www.researchgate.net/publication/227988510_Automatic_Keyword_Extraction_from_Individual_Documents   
 
-### Graph-based approach  
+### N-gram
 
-http://www.talukdar.net/thesis/partha_thesis.pdf
+http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.375.7484&rep=rep1&type=pdf
 
+
+### POS-Tagging
+
+http://www8.cs.umu.se/education/examina/Rapporter/ErikKjellqvist.pdf
+
+
+## Relation Extraction
+
+http://www.cs.cmu.edu/~nbach/papers/A-survey-on-Relation-Extraction.pdf
 
 # Implementation Logic
 

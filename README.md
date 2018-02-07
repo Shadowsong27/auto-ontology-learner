@@ -112,6 +112,19 @@ http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.375.7484&rep=rep1&type=
 
 ### POS-Tagging
 
+1. POS-Tagging is enhanced with lingusitic features. 
+2. Natural language is living and constantly changing
+3. 3 methods are discussed and presented: HMM, Constraint Grammar Framework, TBL
+4. Problem faced by POS tagging
+
+- resolve ambiguity (uses the sequence of the tags and lexicial properties of that word)
+- stochastic vs rule-based. Stochastic more favorable because the amount of data we are able to gather now is vast.
+```
+Stochastic techniques of natural language processing has been widely discussed and also criticized since its early days of use in the 1960's. The arguments against stochastic POS-tagging are mainly that the method in itself is considered too static to cope with the dynamics of natural language and that its impossible to find a corpus for training of the model that is large enough to represent the entire language of a specific population. However, the tremendous advances of computer capabilities combined with the ever increasing amount of digitalized texts since the 1960's has weakened those arguments and made stochastic POS-tagging techniques more and more favorable.
+```
+
+Use POS-tagging to locate all possible keys first. Text around it would be treated as possible information.
+
 http://www8.cs.umu.se/education/examina/Rapporter/ErikKjellqvist.pdf
 
 

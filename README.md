@@ -109,6 +109,9 @@ https://www.researchgate.net/publication/227988510_Automatic_Keyword_Extraction_
 
 http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.375.7484&rep=rep1&type=pdf
 
+strength: unsupervised, consider keywords from text only, does not require external corpus.
+probably the most suitable cases to build. But there are weakness, which could likely be countered by the lingusitic methods such as POS-tagging and improved on the prepprocessing steps. Since there are a lot noise in web documents, simply removing the HTML tags and removing special characters is not going to be enough and besides, the connection between tags should be utilised. (tag type, depth)
+
 
 ### POS-Tagging
 

@@ -4,7 +4,11 @@ import string
 class BaseTokenizer:
 
     @staticmethod
-    def remove_punctuation(self, sentence):
+    def remove_punctuation(sentence):
         translator = str.maketrans('', '', string.punctuation)
         return sentence.translate(translator)
 
+
+class BaseKeywordExtractor:
+
+    pass

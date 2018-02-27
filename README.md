@@ -12,7 +12,7 @@ Components breakdown:
 
 # Research and Preparation Notes
 
-## Terms and Entities extraction
+## Terms extraction
 
 Different approaches taken, mainly divided into two streams:
 
@@ -29,16 +29,20 @@ Maynard D., Li Y. and Peters W. (2008). NLP Techniques for Term Extraction and
 Ontology Population. Retrieved from
 https://pdfs.semanticscholar.org/5f4e/b3e0ee8e0e6e842d1b855bb6ef22dbc098e0.pdf
 
-To achieve automation, unsupervised approach is better.
+The first approach relies on the statistical significance of a word. 
 
-Common used algorithms are:
+The second approach can be further divided into supervised and unsupervised approaches (refer to https://explosion.ai/blog/part-of-speech-pos-tagger-in-python)
+
+To achieve automation, unsupervised approach is more appropriate.
+
+Analysis of common algorithms:
 1. tf-idf
 2. TextRank [davidadamojr/TextRank](https://github.com/davidadamojr/TextRank/)
 3. RAKE [aneesha/RAKE](https://github.com/aneesha/RAKE) | [csurfer/rake-nltk](https://github.com/csurfer/rake-nltk)
+4. n-gram
+5. pos tagger (based on syntactical regex example provided by NLTK, search for regex for tags)
 
 ### Algorithm: tf-idf
-
-
 
 The article proposed the usage of TF-IDF algorithm to identify domain specific term, which then be applied to both text
 categorization and keywords extraction, despite the boost in performance is limited. To be consise, after generating the respective sets of TF-IDF scores for both general text and domain text, if the score from domain text is significantly higher than that of the general text (20% threshold stated in paper). 
@@ -53,6 +57,7 @@ implementation:
 
 https://github.com/hrs/python-tf-idf a very simple algo on how tf-idf works
 https://github.com/RaRe-Technologies/gensim production-level implementation for topical modelling
+
 
 ### Algorithm: TextRank
 
@@ -113,7 +118,7 @@ strength: unsupervised, consider keywords from text only, does not require exter
 probably the most suitable cases to build. But there are weakness, which could likely be countered by the lingusitic methods such as POS-tagging and improved on the prepprocessing steps. Since there are a lot noise in web documents, simply removing the HTML tags and removing special characters is not going to be enough and besides, the connection between tags should be utilised. (tag type, depth)
 
 
-### POS-Tagging
+### POS-Tagging - https://stevenloria.com/pos-tagging/ using this tagger implementation by matthew honnibal
 
 1. POS-Tagging is enhanced with lingusitic features. 
 2. Natural language is living and constantly changing
@@ -129,7 +134,6 @@ Stochastic techniques of natural language processing has been widely discussed a
 Use POS-tagging to locate all possible keys first. Text around it would be treated as possible information.
 
 http://www8.cs.umu.se/education/examina/Rapporter/ErikKjellqvist.pdf
-
 
 ## Relation Extraction
 

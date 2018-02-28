@@ -1,5 +1,6 @@
 from common import BaseTokenizer
 from tokenizer.sentence_tokenizer import SentenceTokenizer
+import nltk
 
 
 class NgramTokenizer(BaseTokenizer):
@@ -12,9 +13,15 @@ class NgramTokenizer(BaseTokenizer):
         for sentence in sentences:
             print(sentence)
             sentence = self.remove_punctuation(sentence)
+            result = nltk.bigrams(sentence.split())
+
+            for item in result:
+                print(item)
             # special character such as \n
             # lower cap
             break
+
+    # use zip and slice
 
 
 if __name__ == '__main__':

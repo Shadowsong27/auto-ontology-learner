@@ -5,6 +5,7 @@ A Final Year Project.
 # Preliminary Design Thoughts
 
 Components breakdown:
+0. Parsing of web page
 1. Terms and Entities extraction
 2. Relations extraction
 3. Terms and Relations Mapping
@@ -120,6 +121,8 @@ probably the most suitable cases to build. But there are weakness, which could l
 
 ### POS-Tagging - https://stevenloria.com/pos-tagging/ using this tagger implementation by matthew honnibal
 
+data obtained from http://conll.cemantix.org/2012/data.html
+
 1. POS-Tagging is enhanced with lingusitic features. 
 2. Natural language is living and constantly changing
 3. 3 methods are discussed and presented: HMM, Constraint Grammar Framework, TBL
@@ -134,6 +137,12 @@ Stochastic techniques of natural language processing has been widely discussed a
 Use POS-tagging to locate all possible keys first. Text around it would be treated as possible information.
 
 http://www8.cs.umu.se/education/examina/Rapporter/ErikKjellqvist.pdf
+
+
+
+
+
+
 
 ## Relation Extraction
 

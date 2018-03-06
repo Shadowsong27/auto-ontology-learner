@@ -13,7 +13,13 @@ Components breakdown:
 
 # Research and Preparation Notes
 
+A very good survey: https://78462f86-a-c00374d1-s-sites.googlegroups.com/a/medelyan.com/www/files/WIDM1097.pdf?attachauth=ANoY7coE4_96Ke-GZF_Qox3ApYPTKglXUOZjdJuIIRypJrojlNXjJHS81wpLZ9fp03g---LXt7hSfAPTjimhMWsdQn7xZdR3cqSsHMysJQeuKsvLlXnS9sHkRMNRgRmhTpfg3lCEKnYx4L0LVLIkNZKEH7uyiy1SYpo3PO0Ly7LuOxBWpqqwnBwTPCv6Pgrr4VsbL6blIBhYuygrZdUC0TuXr__48bCfwg%3D%3D&attredirects=0
+
 ## Terms extraction
+
+"Identifying terminology is a preliminary step towards constructing a more expressive knowledge structure" 
+
+ --- Gillam L, Tariq M, Ahmad K. Terminology and the construction of ontology. Terminology 2005, 11:55– 81.
 
 Different approaches taken, mainly divided into two streams:
 
@@ -138,6 +144,13 @@ Use POS-tagging to locate all possible keys first. Text around it would be treat
 
 http://www8.cs.umu.se/education/examina/Rapporter/ErikKjellqvist.pdf
 
+## Concepts Extraction
+
+compare candidate words with Wikipedia  (dbpedia)
+
+1. parse and store data
+2. 
+
 
 
 
@@ -146,12 +159,44 @@ http://www8.cs.umu.se/education/examina/Rapporter/ErikKjellqvist.pdf
 
 ## Relation Extraction
 
+https://cs.nyu.edu/courses/spring17/CSCI-GA.2590-001/DependencyPaths.pdf
+
+Good intro to relation extraction
+
 http://www.cs.cmu.edu/~nbach/papers/A-survey-on-Relation-Extraction.pdf
+
+http://aclweb.org/anthology/W17-2322
+
+Two main approaches: 
+
+1. rule-based by identifying the keywords (heuristic))
+2. Machine learning approach (described below)
+
+http://ceur-ws.org/Vol-1064/Nebhi_Rule-Based.pdf
+
+Three main approaches: supervised / distant supervised and unsupervised
+
+1. traditional supervised approaches mostly taken kernel-based approaches, with the recent help
+of lexcial and syntactic features support
+
+2. Distant supervision introduced by utilising exsiting community contribution such as FreeBase and Dbpedia.
+Problem: data noisy, hard to generate negative examples. To improve, (Riedel, S., Yao, L., McCallum, A.: Modeling relations and their mentions without
+labeled text. In Proceedings of ECML, 2010.) and (Surdeanu, M. et al.: Multi-instance Multi-label Learning for Relation Extraction.
+In Proceedings of EMNLP-CoNLL, 2012.) uses multi-label learning
+
+3. Unsuperivised approach focuses more on the text itself, by collect co-occurrences of word pairs with strings
+between them. But this is not applicable to a web scenario since the amount of data is small and 
+not similar to each other. This provides challenges to identify the co-occurrences.
+
+
+
 
 # Implementation Logic
 
-
-Performance evaluation: precision, recall and F-measure
+1. keywords extraction heuristic plus n-gram (including co-reference resolution plus prop. - replace)
+2. relations extraction based on strings in between in the format of triples
+3. storage in json format, a dict of keywords and triples
+4. query demo (thesaurus)
 
 # Novelty
 

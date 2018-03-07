@@ -8,20 +8,16 @@ class NgramTokenizer(BaseTokenizer):
     def __init__(self):
         self.sentence_tokenizer = SentenceTokenizer()
 
-    def brutal_tokenize(self, text):
-        sentences = self.sentence_tokenizer.tokenize(text)
-        for sentence in sentences:
-            print(sentence)
-            sentence = self.remove_punctuation(sentence)
-            result = nltk.bigrams(sentence.split())
+    def tokenize(self, text):
+        cleaned_text = self.remove_punctuation(text).lower()
+        result = self.find_ngrams(cleaned_text.split(), 4)
 
-            for item in result:
-                print(item)
-            # special character such as \n
-            # lower cap
-            break
+        for item in result:
+            print(item)
 
-    # use zip and slice
+    @staticmethod
+    def find_ngrams(input_list, n):
+        return zip(*[input_list[i:] for i in range(n)])
 
 
 if __name__ == '__main__':
@@ -29,4 +25,4 @@ if __name__ == '__main__':
     from nltk.corpus import gutenberg
 
     t = NgramTokenizer()
-    t.brutal_tokenize(gutenberg.raw('austen-emma.txt'))
+    t.tokenize(gutenberg.raw('austen-emma.txt'))

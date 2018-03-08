@@ -3,9 +3,13 @@ import string
 import re
 
 from nltk.corpus import gutenberg
+from handler import KeywordHandler
 
 
 class KeywordExtractor:
+
+    def __init__(self):
+        self.handler = KeywordHandler()
 
     def tag(self, text):
         text = nltk.word_tokenize(text)
@@ -21,7 +25,10 @@ class KeywordExtractor:
 
         for pattern in patterns:
             if "NN" in pattern:
-                print(pattern + " " + str(pattern_dict[pattern]))
+                pair = (pattern, pattern_dict[pattern])
+                self.handler.insert_pos_pattern(pair)
+
+        self.handler.commit()
 
     def get_pos_pattern_distribution(self, tagged_text, n):
         pattern_dict = {}

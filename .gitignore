@@ -105,3 +105,6 @@ ENV/
 
 # corpora and data
 resources/
+
+# keys
+access_token.py

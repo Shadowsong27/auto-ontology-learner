@@ -22,3 +22,11 @@ class KeywordHandler:
                 pair[1]
             )
         )
+
+    def truncate_pos_dist(self):
+        self.cursor.execute(
+            """
+            TRUNCATE TABLE PosDistribution
+            """
+        )
+        self.conn.commit()

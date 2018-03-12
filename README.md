@@ -193,10 +193,14 @@ not similar to each other. This provides challenges to identify the co-occurrenc
 
 # Implementation Logic
 
-1. keywords extraction heuristic plus n-gram (including co-reference resolution plus prop. - replace)
-2. relations extraction based on strings in between in the format of triples
-3. storage in json format, a dict of keywords and triples
-4. query demo (thesaurus)
+0. heuristic pattern summarisation for POS tagging
+1. parsing of a given URL
+2. extraction of candidate keywords
+3. extraction of sentences
+4. extraction of triples from sentences
+5. construction of knowledge graph based on triples and keywords
+6. storage of graph in edge list
+7. sample query of keywords and possible return
 
 # Novelty
 

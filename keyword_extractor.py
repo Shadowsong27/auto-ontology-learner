@@ -1,6 +1,7 @@
 import nltk
 import string
 import re
+import logging
 
 from nltk.corpus import gutenberg
 from handler import KeywordHandler
@@ -8,30 +9,43 @@ from handler import KeywordHandler
 
 class KeywordExtractor:
 
+    NGRAM_UPPER = 4
+
     def __init__(self):
         self.handler = KeywordHandler()
+        self.pattern_dict = {}
 
-    def tag(self, text):
+    @staticmethod
+    def tag(text):
         text = nltk.word_tokenize(text)
         return nltk.pos_tag(text)
 
-    def run(self):
-        text = gutenberg.raw('austen-emma.txt')
-        tagged_text = self.tag(text)
+    def generate_pattern_stats(self):
+        """
+        The statistical distribution of POS tags are generated from NLTK
+        Gutenberg Corpus and Web text, both accounted for the relatively
+        formal English and Web like English.
+        :return:
+        """
 
-        pattern_dict = self.get_pos_pattern_distribution(tagged_text, 2)
+        for file_id in nltk.corpus.gutenberg.fileids():
+            logging.info("processing text: {}".format(file_id))
 
-        patterns = sorted(pattern_dict, key=pattern_dict.__getitem__, reverse=True)
+            text = gutenberg.raw(file_id)
+            tagged_text = self.tag(text)
 
-        for pattern in patterns:
+            for i in range(self.NGRAM_UPPER):
+                logging.info("currently at {} gram".format(i))
+                self.get_pos_pattern_distribution(tagged_text, i)
+
+        for pattern in self.pattern_dict.keys():
             if "NN" in pattern:
-                pair = (pattern, pattern_dict[pattern])
+                pair = (pattern, self.pattern_dict[pattern])
                 self.handler.insert_pos_pattern(pair)
 
         self.handler.commit()
 
     def get_pos_pattern_distribution(self, tagged_text, n):
-        pattern_dict = {}
         grams = self.find_ngrams(tagged_text, n)
 
         for item in grams:
@@ -52,12 +66,10 @@ class KeywordExtractor:
                 continue
 
             pattern = pattern.strip()
-            if pattern in pattern_dict:
-                pattern_dict[pattern] += 1
+            if pattern in self.pattern_dict:
+                self.pattern_dict[pattern] += 1
             else:
-                pattern_dict[pattern] = 1
-
-        return pattern_dict
+                self.pattern_dict[pattern] = 1
 
     @staticmethod
     def find_ngrams(input_list, n):
@@ -74,5 +86,5 @@ class KeywordExtractor:
 
 
 if __name__ == '__main__':
-    KeywordExtractor().run()
+    KeywordExtractor().generate_pattern_stats()
 

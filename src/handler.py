@@ -1,6 +1,6 @@
 import pymysql
 
-from access_token import LOCAL_DATABASE_ACCESS
+from src.access_token import LOCAL_DATABASE_ACCESS
 
 
 class KeywordHandler:

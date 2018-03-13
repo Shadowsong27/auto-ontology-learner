@@ -2,7 +2,8 @@ import logging
 
 from common import *
 from nltk.corpus import gutenberg
-from handler import KeywordHandler
+
+from src.handler import KeywordHandler
 
 
 class PosPatternExtractor:

@@ -189,8 +189,6 @@ between them. But this is not applicable to a web scenario since the amount of d
 not similar to each other. This provides challenges to identify the co-occurrences.
 
 
-
-
 # Implementation Logic
 
 0. heuristic pattern summarisation for POS tagging

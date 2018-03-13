@@ -15,7 +15,7 @@ class KeywordHandler:
     def insert_pos_pattern(self, pair):
         self.cursor.execute(
             """
-            INSERT INTO PosDistribution (TagString, Count)
+            INSERT INTO PosDistribution (TagString, Frequency)
             VALUES (%s, %s)
             """, (
                 pair[0],

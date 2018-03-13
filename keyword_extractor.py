@@ -15,19 +15,38 @@ class KeywordExtractor:
         self.handler = KeywordHandler()
         self.pattern_dict = {}
 
-    @staticmethod
-    def tag(text):
-        text = nltk.word_tokenize(text)
-        return nltk.pos_tag(text)
-
     def generate_pattern_stats(self):
         """
         The statistical distribution of POS tags are generated from NLTK
         Gutenberg Corpus and Web text, both accounted for the relatively
         formal English and Web like English.
+
+        called for gutenberg: gutenberg.fileids()
+        called for webtext: webtext.fileids()
+
         :return:
         """
+        # update distribution dict
+        self.update_dict_gutenberg()
 
+        # for file_id in nltk.corpus.webtext.fileids():
+
+        # insert distribution dict
+        self.handler.truncate_pos_dist()
+
+        for pattern in self.pattern_dict.keys():
+            if "NN" in pattern:
+                if pattern[-2:] != "IN" and \
+                                pattern[-2:] != "TO" and \
+                                "CC" not in pattern and \
+                                pattern[-2:] != "DT" and \
+                                pattern[:2] != "IN":
+                    pair = (pattern, self.pattern_dict[pattern])
+                    self.handler.insert_pos_pattern(pair)
+
+        self.handler.commit()
+
+    def update_dict_gutenberg(self):
         for file_id in nltk.corpus.gutenberg.fileids():
             logging.info("processing text: {}".format(file_id))
 
@@ -35,17 +54,10 @@ class KeywordExtractor:
             tagged_text = self.tag(text)
 
             for i in range(self.NGRAM_UPPER):
-                logging.info("currently at {} gram".format(i))
-                self.get_pos_pattern_distribution(tagged_text, i)
+                logging.info("currently at {} gram".format(i + 1))
+                self._get_pos_pattern_distribution(tagged_text, i)
 
-        for pattern in self.pattern_dict.keys():
-            if "NN" in pattern:
-                pair = (pattern, self.pattern_dict[pattern])
-                self.handler.insert_pos_pattern(pair)
-
-        self.handler.commit()
-
-    def get_pos_pattern_distribution(self, tagged_text, n):
+    def _get_pos_pattern_distribution(self, tagged_text, n):
         grams = self.find_ngrams(tagged_text, n)
 
         for item in grams:
@@ -66,6 +78,7 @@ class KeywordExtractor:
                 continue
 
             pattern = pattern.strip()
+
             if pattern in self.pattern_dict:
                 self.pattern_dict[pattern] += 1
             else:
@@ -84,7 +97,13 @@ class KeywordExtractor:
     def text_to_sentences(text):
         return re.split("(?<!\w\.\w.)(?<![A-Z][a-z]\.)(?<=\.|\?)\s", text)
 
+    @staticmethod
+    def tag(text):
+        text = nltk.word_tokenize(text)
+        return nltk.pos_tag(text)
+
 
 if __name__ == '__main__':
+    logging.basicConfig(level=logging.DEBUG, format='%(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
     KeywordExtractor().generate_pattern_stats()
 

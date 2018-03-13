@@ -33,6 +33,7 @@ class PosPatternExtractor:
         # insert distribution dict
         self.handler.truncate_pos_dist()
 
+        # TODO: implement a better rule selection
         for pattern in self.pattern_dict.keys():
             if "NN" in pattern:
                 if pattern[-2:] != "IN" and \

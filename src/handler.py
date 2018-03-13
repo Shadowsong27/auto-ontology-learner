@@ -3,7 +3,7 @@ import pymysql
 from src.access_token import LOCAL_DATABASE_ACCESS
 
 
-class KeywordHandler:
+class PosPatternHandler:
 
     def __init__(self):
         self.conn = pymysql.connect(*LOCAL_DATABASE_ACCESS)
@@ -30,3 +30,18 @@ class KeywordHandler:
             """
         )
         self.conn.commit()
+
+    def get_patterns_above_ratio(self, ratio):
+        self.cursor.execute(
+            """
+            SELECT 
+              TagString, 
+              Frequency / 
+                (
+                  SELECT MAX(Frequency) FROM PosDistribution
+                ) AS ratio
+            FROM PosDistribution
+            HAVING ratio >= %s ORDER BY ratio DESC
+            """, (ratio, )
+        )
+        return self.cursor.fetchall()

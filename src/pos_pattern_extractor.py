@@ -1,9 +1,9 @@
 import logging
 
-from common import *
+from src.common import *
 from nltk.corpus import gutenberg
 
-from src.handler import KeywordHandler
+from src.handler import PosPatternHandler
 
 
 class PosPatternExtractor:
@@ -11,7 +11,7 @@ class PosPatternExtractor:
     NGRAM_UPPER = 4
 
     def __init__(self):
-        self.handler = KeywordHandler()
+        self.handler = PosPatternHandler()
         self.pattern_dict = {}
 
     def generate_pattern_stats(self):
@@ -38,7 +38,9 @@ class PosPatternExtractor:
                 if pattern[-2:] != "IN" and \
                                 pattern[-2:] != "TO" and \
                                 "CC" not in pattern and \
+                                "CD" not in pattern and \
                                 pattern[-2:] != "DT" and \
+                                pattern[-2:] != "VBD" and \
                                 pattern[:2] != "IN":
                     pair = (pattern, self.pattern_dict[pattern])
                     self.handler.insert_pos_pattern(pair)
@@ -52,8 +54,8 @@ class PosPatternExtractor:
             text = gutenberg.raw(file_id)
             tagged_text = tag(text)
 
-            for i in range(self.NGRAM_UPPER):
-                logging.info("currently at {} gram".format(i + 1))
+            for i in range(1, self.NGRAM_UPPER + 1):
+                logging.info("currently at {} gram".format(i))
                 self._get_pos_pattern_distribution(tagged_text, i)
 
     def _get_pos_pattern_distribution(self, tagged_text, n):

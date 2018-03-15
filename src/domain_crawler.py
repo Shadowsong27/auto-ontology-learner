@@ -1,29 +1,67 @@
 import logging
 import requests
 import random
+import urllib3
 
+from queue import Queue
 from bs4 import BeautifulSoup
 
 
-class DomainCrawler:
+class SimpleRecursiveDomainCrawler:
+
+    def __init__(self, home_domain):
+        self.collision_set = set()
+        self.tasks_queue = Queue()
+        self.home_domain = home_domain
 
     def crawl(self, given_url):
+        logging.info("connecting to target ...")
         # connect to home domain
         headers = {
             'User-Agent': self.get_random_agent(),
         }
-        resp = requests.get(given_url, headers=headers)
+        try:
+            resp = requests.get(given_url, headers=headers)
+        except urllib3.exceptions.ProtocolError:
+            self.crawl_next()
+            return
+
         if resp.status_code == 200:
             logging.info("succesfully connected, building soup")
             soup = BeautifulSoup(resp.content, 'lxml')
         else:
-            logging.error("Domain access failed.")
+            logging.error("connection failed.")
+            self.crawl_next()
             return
 
+        # parse content
+
         # get all links recursively
+        logging.info("parsing for urls ...")
         anchors = soup.find_all("a")
         for anchor in anchors:
-            print(anchor['href'])
+            try:
+                link = anchor['href']
+            except KeyError:
+                continue
+
+            if 'http' == link[:4]:
+                if link not in self.collision_set:
+                    if self.home_domain in link:
+                        self.collision_set.add(link)
+                        self.tasks_queue.put(link)
+        logging.info("parsing completed.")
+
+        if self.tasks_queue.qsize() == 0:
+            logging.info("urls exhausted. Process complete.")
+            return
+        else:
+            self.crawl_next()
+
+    def crawl_next(self):
+        next_url = self.tasks_queue.get()
+        logging.info("next url: {}".format(next_url))
+        self.crawl(next_url)
 
     def get_random_proxy(self):
         # will implemented in the future
@@ -44,8 +82,12 @@ class DomainCrawler:
         ]
         return random.choice(user_agents)
 
+    def get_total_number_urls(self):
+        logging.info("total_number is {}".format(len(self.collision_set)))
+
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    c = DomainCrawler()
-    c.crawl("http://www.fratinilatrattoria.com")
+    c = SimpleRecursiveDomainCrawler("https://www.eater.com")
+    c.crawl("https://www.eater.com/maps/best-new-restaurants-singapore")
+    c.get_total_number_urls()

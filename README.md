@@ -191,16 +191,44 @@ not similar to each other. This provides challenges to identify the co-occurrenc
 
 # Implementation Logic
 
-0. heuristic pattern summarisation for POS tagging
-1. parsing of a given URL
-2. extraction of candidate keywords
-3. extraction of sentences
-4. extraction of triples from sentences
-5. construction of knowledge graph based on triples and keywords
-6. storage of graph in edge list
-7. sample query of keywords and possible return
+### experimentation status
 
-# Novelty
+- [x] heuristic pattern summarisation for POS tagging
+- [x] parsing of a given URL
+- [ ] NER for short text
+- [ ] Anchor text for short text
+- [ ] extraction of keywords from long text
+- [ ] extraction of sentences
+- [ ] extraction of triples from sentences
+- [ ] construction of knowledge graph based on triples and keywords
+- [ ] storage of graph in edge list
+- [ ] sample query of keywords and possible return
+
+### prototyping status (if have time, otherwise will show simplified version)
+
+- [ ] heuristic pattern summarisation for POS tagging
+- [ ] parsing of a given URL
+- [ ] NER for short text
+- [ ] Anchor text for short text
+- [ ] extraction of keywords from long text
+- [ ] extraction of sentences
+- [ ] extraction of triples from sentences
+- [ ] construction of knowledge graph based on triples and keywords
+- [ ] storage of graph in edge list
+- [ ] sample query of keywords and possible return
+
+# Final Report Layout
+
+1. Introduction - similar to interim with more insights
+2. Lit review on the following topics
+
+- keywords extraction and algorithm
+- NER
+- relation extraction and triples extraction (for relation search)
+- storage and search of knowledge
+
+3. Project
+
 
 # Acknowledgement
 

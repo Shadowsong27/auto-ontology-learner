@@ -3,7 +3,7 @@ import pymysql
 from src.access_token import LOCAL_DATABASE_ACCESS
 
 
-class PosPatternHandler:
+class BaseHandler:
 
     def __init__(self):
         self.conn = pymysql.connect(*LOCAL_DATABASE_ACCESS)
@@ -11,6 +11,9 @@ class PosPatternHandler:
 
     def commit(self):
         self.conn.commit()
+
+
+class PosPatternHandler(BaseHandler):
 
     def insert_pos_pattern(self, pair):
         self.cursor.execute(
@@ -45,3 +48,33 @@ class PosPatternHandler:
             """, (ratio, )
         )
         return self.cursor.fetchall()
+
+
+class CrawlerHandler(BaseHandler):
+
+    def check_domain_crawled(self, domain_string):
+        self.cursor.execute(
+            """
+            SELECT Status FROM Domain
+            WHERE DomainUrl=%s
+            """, (domain_string, )
+        )
+        return self.cursor.fetchone()
+
+    def insert_domain(self, domain_string):
+        self.cursor.execute(
+            """
+            INSERT INTO Domain (DomainUrl)
+            VALUES (%s)
+            """, (domain_string, )
+        )
+        self.commit()
+
+    def mark_crawled(self, domain_string):
+        self.cursor.execute(
+            """
+            UPDATE Domain SET Status=1
+            WHERE DomainUrl=%s
+            """, (domain_string, )
+        )
+        self.commit()

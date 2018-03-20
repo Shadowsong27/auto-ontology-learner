@@ -16,7 +16,7 @@ def get_domain_from_url(given_url):
     return protocol + "//" + domain
 
 
-class SimpleRecursiveDomainCrawler:
+class SimpleDomainCrawler:
 
     """
     This class handles the downloading of body text from a given domain.
@@ -43,34 +43,37 @@ class SimpleRecursiveDomainCrawler:
         if domain_check_resp is None:
             logging.info("Current domain is new, stored and proceed to crawling")
             self.handler.insert_domain(self.home_domain)
-            self.collision_set.add(self.home_domain)   # start from home domain
-            self.crawl(self.home_domain)
-            self.handler.mark_crawled(self.home_domain)
-            logging.info("Total number of URL crawled: {}".format(len(self.collision_set)))
+            self.crawl()
         else:
             domain_check_resp = domain_check_resp[0]
             if domain_check_resp == 0:
                 logging.info("Current domain is found in DB, but not processed")
-                self.collision_set.add(self.home_domain)  # start from home domain
-                self.crawl(self.home_domain)
-                self.handler.mark_crawled(self.home_domain)
-                logging.info("Total number of URL crawled: {}".format(len(self.collision_set)))
+                self.crawl()
             else:
                 logging.info("Current domain has been crawled, exit.")
 
-    def crawl(self, given_url):
-        logging.debug("Fetching page source")
+    def crawl(self):
+        self.collision_set.add(self.home_domain)  # start from home domain
+        self.tasks_queue.put(self.home_domain)
+
+        while self.tasks_queue.qsize() > 0:
+            self.crawl_each()
+
+        self.handler.mark_crawled(self.home_domain)
+        logging.info("Total number of URL crawled: {}".format(len(self.collision_set)))
+
+    def crawl_each(self):
+        current_url = self.tasks_queue.get()
+        logging.debug("Fetching page source from {}".format(current_url))
         headers = {
             'User-Agent': self.get_random_agent(),
         }
 
         try:
-            resp = requests.get(given_url, headers=headers, timeout=30)
+            resp = requests.get(current_url, headers=headers, timeout=30)
         except urllib3.exceptions.ProtocolError:
-            self.crawl_next()
             return
         except requests.exceptions.Timeout:
-            self.crawl_next()
             return
 
         if resp.status_code == 200:
@@ -78,13 +81,12 @@ class SimpleRecursiveDomainCrawler:
             content = resp.content
         else:
             logging.error("Connection failed.")
-            self.crawl_next()
             return
 
         logging.debug("Saving page source")
         domain_id = self.handler.get_domain_id(self.home_domain)
-        hashed_url = self.get_hashed_url(given_url)
-        self.handler.insert_domain_body(domain_id, hashed_url, content, given_url)
+        hashed_url = self.get_hashed_url(current_url)
+        self.handler.insert_domain_body(domain_id, hashed_url, content, current_url)
 
         # get all links
         # if links not seen before, it will not be added nor processed
@@ -95,10 +97,6 @@ class SimpleRecursiveDomainCrawler:
         self.parse_links(content)
 
         logging.debug("Check for outstanding tasks in queue")
-        if self.tasks_queue.qsize() == 0:
-            logging.info("urls exhausted. Process complete.")
-        else:
-            self.crawl_next()
 
     @staticmethod
     def get_hashed_url(given_url):
@@ -123,11 +121,6 @@ class SimpleRecursiveDomainCrawler:
                         self.collision_set.add(link)
                         self.tasks_queue.put(link)
 
-    def crawl_next(self):
-        next_url = self.tasks_queue.get()
-        logging.info("next url: {}".format(next_url))
-        self.crawl(next_url)
-
     @staticmethod
     def get_random_agent():
         user_agents = [
@@ -146,5 +139,5 @@ class SimpleRecursiveDomainCrawler:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    c = SimpleRecursiveDomainCrawler("https://www.cottercrunch.com/turkish-style-grain-free-savory-breakfast-bowls/")
+    c = SimpleDomainCrawler("http://www.aura.sg")
     c.execute()

@@ -229,7 +229,14 @@ not similar to each other. This provides challenges to identify the co-occurrenc
 
 3. Project
 
-
 # Acknowledgement
+
+# Scalability
+
+1. Crawler Robustness
+    1. Defense and attack
+    2. Dedup Queue Algo
+    
+2. 
 
 # Contribution as an open sourced project

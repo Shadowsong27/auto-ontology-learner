@@ -6,7 +6,7 @@ from src.access_token import LOCAL_DATABASE_ACCESS
 class BaseHandler:
 
     def __init__(self):
-        self.conn = pymysql.connect(*LOCAL_DATABASE_ACCESS)
+        self.conn = pymysql.connect(*LOCAL_DATABASE_ACCESS, charset='utf8')
         self.cursor = self.conn.cursor()
 
     def commit(self):
@@ -61,6 +61,15 @@ class CrawlerHandler(BaseHandler):
         )
         return self.cursor.fetchone()
 
+    def get_domain_id(self, domain_string):
+        self.cursor.execute(
+            """
+            SELECT id FROM Domain
+            WHERE DomainUrl=%s
+            """, (domain_string, )
+        )
+        return self.cursor.fetchone()[0]
+
     def insert_domain(self, domain_string):
         self.cursor.execute(
             """
@@ -76,5 +85,19 @@ class CrawlerHandler(BaseHandler):
             UPDATE Domain SET Status=1
             WHERE DomainUrl=%s
             """, (domain_string, )
+        )
+        self.commit()
+
+    def insert_domain_body(self, domain_id, hashed_url, body, page_url):
+        self.cursor.execute(
+            """
+            INSERT INTO DomainBody (DomainId, HashedUrl, Body, PageUrl)
+            VALUES (%s, %s, %s, %s)
+            """, (
+                domain_id,
+                hashed_url,
+                body,
+                page_url
+            )
         )
         self.commit()

@@ -1,12 +1,13 @@
 import logging
-import requests
 import random
-import urllib3
-
 from hashlib import blake2b
 from queue import Queue
+
+import requests
+import urllib3
 from bs4 import BeautifulSoup
-from src.handler import CrawlerHandler
+
+from database_handler import CrawlerHandler
 
 
 def get_domain_from_url(given_url):
@@ -145,5 +146,5 @@ class SimpleRecursiveDomainCrawler:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    c = SimpleRecursiveDomainCrawler("http://www.noodlebox.ca")
+    c = SimpleRecursiveDomainCrawler("https://www.cottercrunch.com/turkish-style-grain-free-savory-breakfast-bowls/")
     c.execute()

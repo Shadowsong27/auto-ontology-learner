@@ -1,9 +1,9 @@
 import logging
 
-from src.common import *
 from nltk.corpus import gutenberg
+from src.common import *
 
-from src.handler import PosPatternHandler
+from database_handler import PosPatternHandler
 
 
 class PosPatternExtractor:

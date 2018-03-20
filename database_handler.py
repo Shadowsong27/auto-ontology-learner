@@ -1,6 +1,6 @@
 import pymysql
 
-from src.access_token import LOCAL_DATABASE_ACCESS
+from access_token import LOCAL_DATABASE_ACCESS
 
 
 class BaseHandler:

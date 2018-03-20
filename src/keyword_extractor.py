@@ -1,10 +1,11 @@
 import logging
 
-from src.handler import PosPatternHandler
 from src.common import *
 
+from database_handler import PosPatternHandler
 
-class CandidateKeywordExtractor:
+
+class SimpleKeywordsExtractor:
 
     def __init__(self):
         self.handler = PosPatternHandler()
@@ -32,4 +33,4 @@ class CandidateKeywordExtractor:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    print(CandidateKeywordExtractor().generate_keywords("Established in 2009, 4FINGERS was founded after its creators tried Korean-style fried chicken in New York City's Koreatown. Steen Puggaard joined the brand as CEO in 2014, and the brand expanded from one outlet in Singapore to 21 outlets in Asia-Pacific within 4 years.[3][4] 4FINGERS is located in malls such as Plaza Singapura, Orchard Gateway and Changi Airport. In 2015, they opened their first overseas store in Kuala Lumpur, Malaysia located in Mid Valley Megamall and NU Sentral in December 2016. In June 2017, 4FINGERS announced its expansion to Australia, with their first store located on Bourke Street."))
+    print(SimpleKeywordsExtractor().generate_keywords("Established in 2009, 4FINGERS was founded after its creators tried Korean-style fried chicken in New York City's Koreatown. Steen Puggaard joined the brand as CEO in 2014, and the brand expanded from one outlet in Singapore to 21 outlets in Asia-Pacific within 4 years.[3][4] 4FINGERS is located in malls such as Plaza Singapura, Orchard Gateway and Changi Airport. In 2015, they opened their first overseas store in Kuala Lumpur, Malaysia located in Mid Valley Megamall and NU Sentral in December 2016. In June 2017, 4FINGERS announced its expansion to Australia, with their first store located on Bourke Street."))

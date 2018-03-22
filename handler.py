@@ -101,3 +101,16 @@ class CrawlerHandler(BaseHandler):
             )
         )
         self.commit()
+
+
+class ParserHandler(BaseHandler):
+
+    def get_domain_bodies_by_id(self, domain_id):
+        self.cursor.execute(
+            """
+            SELECT Body FROM DomainBody
+            WHERE DomainId=%s
+            """, (domain_id, )
+        )
+        return self.cursor.fetchall()
+

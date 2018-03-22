@@ -3,7 +3,7 @@ import logging
 from nltk.corpus import gutenberg
 from src.common import *
 
-from database_handler import PosPatternHandler
+from handler import PosPatternHandler
 
 
 class PosPatternExtractor:

@@ -2,7 +2,7 @@ import logging
 
 from src.common import *
 
-from database_handler import PosPatternHandler
+from handler import PosPatternHandler
 
 
 class SimpleKeywordsExtractor:

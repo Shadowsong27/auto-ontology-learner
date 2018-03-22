@@ -7,7 +7,7 @@ import requests
 import urllib3
 from bs4 import BeautifulSoup
 
-from database_handler import CrawlerHandler
+from handler import CrawlerHandler
 
 
 def get_domain_from_url(given_url):

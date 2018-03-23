@@ -17,8 +17,6 @@ class SimpleGenericParser:
         for body in bodies:
             self.parse_each(body[0])
 
-            break
-
         logging.info("Parsing of domain {} complete".format(domain_id))
 
     def parse_each(self, body):
@@ -38,6 +36,8 @@ class SimpleGenericParser:
                 # further decide type
                 self.is_complete_sentence(candidate.text)
 
+
+
     @staticmethod
     def is_anchor_text(candidate):
         try:
@@ -52,7 +52,7 @@ class SimpleGenericParser:
         length_of_tags = len(tags)
 
         # logging.debug("Number of tokens in general text: {}".format(length_of_tags))
-        if length_of_tags > 3:
+        if length_of_tags > 4:
             logging.debug("Long text: {}".format(text))
         else:
             logging.debug("Short text: {}".format(text))
@@ -89,6 +89,29 @@ class SimpleGenericParser:
 
     def parse_long_text(self):
         pass
+
+
+class PageIndexer:
+
+    """
+    This class will parse raw HTML and output the textual-atomic Beautifulsoup objects
+    and their depth indexing in a list
+
+    input: str
+    output: model
+
+    """
+    def __init__(self):
+        pass
+
+    def update_raw(self):
+        """This method update the raw content of this indexer"""
+        pass
+
+    def execute(self):
+        pass
+
+
 
 
 if __name__ == '__main__':

@@ -191,15 +191,6 @@ not similar to each other. This provides challenges to identify the co-occurrenc
 
 # Implementation Logic
 
-storage format:
-
-```json
-{
-  
-
-}
-```
-
 ### experimentation status
 
 - [x] heuristic pattern summarisation for POS tagging
@@ -209,22 +200,14 @@ storage format:
 - [ ] extraction of keywords from long text
 - [ ] extraction of sentences
 - [ ] extraction of triples from sentences
+- [ ] storage of graph
 - [ ] construction of knowledge graph based on triples and keywords
-- [ ] storage of graph in edge list
 - [ ] sample query of keywords and possible return
 
 ### prototyping status (if have time, otherwise will show simplified version)
 
-- [ ] heuristic pattern summarisation for POS tagging
-- [ ] parsing of a given URL
-- [ ] NER for short text
-- [ ] Anchor text for short text
-- [ ] extraction of keywords from long text
-- [ ] extraction of sentences
-- [ ] extraction of triples from sentences
-- [ ] construction of knowledge graph based on triples and keywords
-- [ ] storage of graph in edge list
-- [ ] sample query of keywords and possible return
+- [ ] simple web front end for showing execution logging and sample output
+- [ ] performance evaluation
 
 # Final Report Layout
 
@@ -238,9 +221,7 @@ storage format:
 
 3. Project
 
-# Acknowledgement
-
-# Scalability
+Scalability 
 
 1. Crawler Robustness
     1. Defense and attack
@@ -249,3 +230,17 @@ storage format:
 2. 
 
 # Contribution as an open sourced project
+
+# Thoughts
+
+TODO: indexing of HTML tree
+
+grouping of short keywords to form linked short text
+
+Data should be stored in 3 different tables.
+
+One for anchor text
+
+one for short text and its group
+
+one for long text and for triples

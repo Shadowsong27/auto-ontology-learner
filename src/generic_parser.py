@@ -1,5 +1,6 @@
 from handler import ParserHandler
-from bs4 import BeautifulSoup
+from model import CandidateText
+from common import build_clean_soup, text_to_sentences, tag
 
 import logging
 
@@ -14,37 +15,66 @@ class SimpleGenericParser:
         bodies = self.handler.get_domain_bodies_by_id(domain_id)
 
         for body in bodies:
-            self.parse_each(body)
+            self.parse_each(body[0])
 
             break
 
         logging.info("Parsing of domain {} complete".format(domain_id))
 
     def parse_each(self, body):
-        soup = BeautifulSoup(body[0], 'lxml')
+        soup = build_clean_soup(body)
+        candidates = self.extract_candidate_text(soup)
 
-        # simple cleaning
-        for script in soup("script"):
-            script.decompose()
+        for candidate in candidates:
+
+            # is anchor test?
+            resp = self.is_anchor_text(candidate)
+
+            if resp:
+                logging.debug("Anchor text: {} | {}".format(candidate.text, resp))
+                # parse and assemble anchor text
+            else:
+                # is short text ? is complete sentence
+                # further decide type
+                self.is_complete_sentence(candidate.text)
+
+    @staticmethod
+    def is_anchor_text(candidate):
+        try:
+            resp = candidate.analysed_html['href']
+            return resp
+        except KeyError:
+            return False
+
+    @staticmethod
+    def is_complete_sentence(text):
+        tags = tag(text)
+        length_of_tags = len(tags)
+
+        # logging.debug("Number of tokens in general text: {}".format(length_of_tags))
+        if length_of_tags > 3:
+            logging.debug("Long text: {}".format(text))
+        else:
+            logging.debug("Short text: {}".format(text))
+
+    def extract_candidate_text(self, soup):
+        candidates = []
 
         # classification
         for child in soup.find('body').findChildren():
             if self.is_atomic(child):
-                print("===a===")
                 text = child.text.strip()
 
                 if "\n" in text:
-                    texts = list(map(lambda x: x.strip(), text.split("\n")))
-                else:
-                    texts = [text]
+                    text = " ".join(list(map(lambda x: x.strip(), text.split("\n"))))
 
-                if texts != ['']:
-                    print(texts)
-                    print(child)
+                if text != '':
+                    candidates.append(CandidateText(text=text, analysed_html=child))
 
-        # parsing of each class
+        return candidates
 
-    def is_atomic(self, soup_object):
+    @staticmethod
+    def is_atomic(soup_object) -> bool:
         for child in soup_object.findChildren():
             if child.text != '':
                 return False

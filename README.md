@@ -191,6 +191,15 @@ not similar to each other. This provides challenges to identify the co-occurrenc
 
 # Implementation Logic
 
+storage format:
+
+```json
+{
+  
+
+}
+```
+
 ### experimentation status
 
 - [x] heuristic pattern summarisation for POS tagging

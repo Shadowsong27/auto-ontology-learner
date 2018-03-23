@@ -1,3 +1,5 @@
+from bs4 import BeautifulSoup
+
 import string
 import nltk
 import re
@@ -19,3 +21,11 @@ def text_to_sentences(text):
 def tag(text):
     text = nltk.word_tokenize(text)
     return nltk.pos_tag(text)
+
+
+def build_clean_soup(body):
+    soup = BeautifulSoup(body, 'lxml')
+    # simple cleaning
+    for script in soup("script"):
+        script.decompose()
+    return soup

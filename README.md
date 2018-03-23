@@ -244,3 +244,17 @@ One for anchor text
 one for short text and its group
 
 one for long text and for triples
+
+self-learning on pos pattern for various web elements
+if crawling to slow in demo use MT
+
+# Future
+
+a pre step towards true generic web parsing, must harvest the power of NLP, and using heuristic classifiction simplifies 
+the problem such as phyicists do and derive their formula with assumptions.
+We could not achieven 100% accuracy, even in 20 years time.
+
+
+# Things still need to review
+NER
+Relationship extraction

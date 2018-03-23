@@ -36,8 +36,6 @@ class SimpleGenericParser:
                 # further decide type
                 self.is_complete_sentence(candidate.text)
 
-
-
     @staticmethod
     def is_anchor_text(candidate):
         try:
@@ -102,7 +100,7 @@ class PageIndexer:
 
     """
     def __init__(self):
-        pass
+        self.data = []
 
     def update_raw(self):
         """This method update the raw content of this indexer"""
@@ -111,7 +109,13 @@ class PageIndexer:
     def execute(self):
         pass
 
+    @staticmethod
+    def is_atomic(soup_object):
+        for child in soup_object.findChildren():
+            if child.text != '':
+                return False
 
+        return True
 
 
 if __name__ == '__main__':

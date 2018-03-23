@@ -1,19 +1,13 @@
-import logging
-import random
 from hashlib import blake2b
 from queue import Queue
-
-import requests
-import urllib3
 from bs4 import BeautifulSoup
 
+import logging
+import random
+import requests
+import urllib3
+
 from handler import CrawlerHandler
-
-
-def get_domain_from_url(given_url):
-    protocol, link_body = given_url.split("//")
-    domain = link_body.split("/")[0]
-    return protocol + "//" + domain
 
 
 class SimpleDomainCrawler:
@@ -25,7 +19,6 @@ class SimpleDomainCrawler:
 
     The outcome of running this crawler should save every HTML pages in database with the given
     input of URL
-
     """
 
     def __init__(self, given_url):
@@ -33,7 +26,7 @@ class SimpleDomainCrawler:
         self.collision_set = set()
         self.tasks_queue = Queue()
         self.given_url = given_url
-        self.home_domain = get_domain_from_url(given_url)
+        self.home_domain = self.get_domain_from_url(given_url)
         self.handler = CrawlerHandler()
 
     def execute(self):
@@ -94,17 +87,11 @@ class SimpleDomainCrawler:
         # processing and to collision set for de - duplication (simple naive)
         logging.debug("Parse for links and push tasks into queue")
 
-        self.parse_links(content)
+        self.parse_tasks(content)
 
         logging.debug("Check for outstanding tasks in queue")
 
-    @staticmethod
-    def get_hashed_url(given_url):
-        hasher = blake2b(digest_size=32)
-        hasher.update(given_url.encode("utf-8"))
-        return hasher.hexdigest()
-
-    def parse_links(self, content):
+    def parse_tasks(self, content):
         soup = BeautifulSoup(content, 'lxml')
         anchors = soup.find_all("a")
         for anchor in anchors:
@@ -122,6 +109,12 @@ class SimpleDomainCrawler:
                         self.tasks_queue.put(link)
 
     @staticmethod
+    def get_hashed_url(given_url):
+        hasher = blake2b(digest_size=32)
+        hasher.update(given_url.encode("utf-8"))
+        return hasher.hexdigest()
+
+    @staticmethod
     def get_random_agent():
         user_agents = [
             'Mozilla/5.0 (Windows; U; Windows NT 5.1; it; rv:1.8.1.11) Gecko/20071127 Firefox/2.0.0.11',
@@ -135,6 +128,12 @@ class SimpleDomainCrawler:
             '(KHTML, like Gecko) Chrome/18.0.1025.151 Safari/535.19'
         ]
         return random.choice(user_agents)
+
+    @staticmethod
+    def get_domain_from_url(given_url):
+        protocol, link_body = given_url.split("//")
+        domain = link_body.split("/")[0]
+        return protocol + "//" + domain
 
 
 if __name__ == '__main__':

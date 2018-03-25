@@ -1,6 +1,7 @@
 from handler import ParserHandler
 from model import CandidateText
 from common import build_clean_soup, text_to_sentences, tag
+from bs4 import Tag
 
 import logging
 
@@ -10,31 +11,45 @@ class SimpleGenericParser:
     def __init__(self):
         self.handler = ParserHandler()
 
-    def parse(self, domain_id):
+    def execute(self, domain_id):
         logging.info("Start parsing of domain {}".format(domain_id))
         bodies = self.handler.get_domain_bodies_by_id(domain_id)
 
         for body in bodies:
-            self.parse_each(body[0])
+
+            page_source = body[0]
+            soup = build_clean_soup(page_source)
+            candidates = self.parse_each(body[0])
+            self.parse_anchor_text(candidates)
+
+            # TODO:
+            # 1. depth indexing and obtain indexed HTML tree (pause)
+            # 2. rule-based classification
+            # 3. class-level information parsing and storage
+
+            break
 
         logging.info("Parsing of domain {} complete".format(domain_id))
 
     def parse_each(self, body):
         soup = build_clean_soup(body)
         candidates = self.extract_candidate_text(soup)
+        self.classify_candidate_type(candidates)
+        return candidates
 
+    def classify_candidate_type(self, candidates):
         for candidate in candidates:
 
             # is anchor test?
             resp = self.is_anchor_text(candidate)
 
             if resp:
-                logging.debug("Anchor text: {} | {}".format(candidate.text, resp))
-                # parse and assemble anchor text
+                candidate.type = 'anchor'
             else:
-                # is short text ? is complete sentence
-                # further decide type
-                self.is_complete_sentence(candidate.text)
+                if self.is_complete_sentence(candidate.text):
+                    candidate.type = 'long'
+                else:
+                    candidate.type = 'short'
 
     @staticmethod
     def is_anchor_text(candidate):
@@ -51,9 +66,9 @@ class SimpleGenericParser:
 
         # logging.debug("Number of tokens in general text: {}".format(length_of_tags))
         if length_of_tags > 4:
-            logging.debug("Long text: {}".format(text))
+            return True
         else:
-            logging.debug("Short text: {}".format(text))
+            return False
 
     def extract_candidate_text(self, soup):
         candidates = []
@@ -72,15 +87,17 @@ class SimpleGenericParser:
         return candidates
 
     @staticmethod
-    def is_atomic(soup_object) -> bool:
+    def is_atomic(soup_object):
         for child in soup_object.findChildren():
             if child.text != '':
                 return False
 
         return True
 
-    def parse_anchor_text(self):
-        pass
+    def parse_anchor_text(self, candidates):
+        for candidate in candidates:
+            if candidate.type == 'anchor':
+                print(candidate)
 
     def parse_short_text(self):
         pass
@@ -89,35 +106,6 @@ class SimpleGenericParser:
         pass
 
 
-class PageIndexer:
-
-    """
-    This class will parse raw HTML and output the textual-atomic Beautifulsoup objects
-    and their depth indexing in a list
-
-    input: str
-    output: model
-
-    """
-    def __init__(self):
-        self.data = []
-
-    def update_raw(self):
-        """This method update the raw content of this indexer"""
-        pass
-
-    def execute(self):
-        pass
-
-    @staticmethod
-    def is_atomic(soup_object):
-        for child in soup_object.findChildren():
-            if child.text != '':
-                return False
-
-        return True
-
-
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    SimpleGenericParser().parse(1)
+    SimpleGenericParser().execute(1)

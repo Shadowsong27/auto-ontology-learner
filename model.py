@@ -10,3 +10,15 @@ class CandidateText(BaseModel):
         self.text = text
         self.analysed_html = analysed_html
         self.type = None
+
+
+class AnchorText(CandidateText):
+
+    def __init__(self, direction, parent_object):
+        super(AnchorText, self).__init__(self, direction)
+        self.text = parent_object.text
+        self.analysed_html = parent_object.analysed_html
+        self.direction = direction
+        self.type = 'anchor'
+
+

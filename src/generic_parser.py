@@ -1,7 +1,8 @@
 from handler import ParserHandler
-from model import CandidateText
+from model import CandidateText, AnchorText
 from common import build_clean_soup, text_to_sentences, tag
 from bs4 import Tag
+import os
 
 import logging
 
@@ -10,9 +11,11 @@ class SimpleGenericParser:
 
     def __init__(self):
         self.handler = ParserHandler()
+        self.domain = None
 
     def execute(self, domain_id):
-        logging.info("Start parsing of domain {}".format(domain_id))
+        self.domain = self.handler.get_domain(domain_id)
+        logging.info("Start parsing of domain {}".format(self.domain))
         bodies = self.handler.get_domain_bodies_by_id(domain_id)
 
         for body in bodies:
@@ -20,8 +23,9 @@ class SimpleGenericParser:
             page_source = body[0]
             soup = build_clean_soup(page_source)
             candidates = self.parse_each(body[0])
-            self.parse_anchor_text(candidates)
-
+            # self.parse_anchor_text(candidates)
+            self.parse_short_text(candidates)
+            self.parse_long_text(candidates)
             # TODO:
             # 1. depth indexing and obtain indexed HTML tree (pause)
             # 2. rule-based classification
@@ -62,10 +66,11 @@ class SimpleGenericParser:
     @staticmethod
     def is_complete_sentence(text):
         tags = tag(text)
-        length_of_tags = len(tags)
+        list_of_tags = set(map(lambda x: x[1], tags))
 
-        # logging.debug("Number of tokens in general text: {}".format(length_of_tags))
-        if length_of_tags > 4:
+        diversity_of_tags = len(list_of_tags)
+
+        if diversity_of_tags >= 10:
             return True
         else:
             return False
@@ -97,13 +102,24 @@ class SimpleGenericParser:
     def parse_anchor_text(self, candidates):
         for candidate in candidates:
             if candidate.type == 'anchor':
+                direction = self.complete_link(candidate.analysed_html['href'])
+                print(AnchorText(direction=direction, parent_object=candidate))
+
+    def parse_short_text(self, candidates):
+        for candidate in candidates:
+            if candidate.type == 'short':
                 print(candidate)
 
-    def parse_short_text(self):
-        pass
+    def parse_long_text(self, candidates):
+        for candidate in candidates:
+            if candidate.type == 'long':
+                print(candidate)
 
-    def parse_long_text(self):
-        pass
+    def complete_link(self, link):
+        if link[:4] != "http":
+            return self.domain + link
+        else:
+            return link
 
 
 if __name__ == '__main__':

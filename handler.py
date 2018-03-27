@@ -114,3 +114,14 @@ class ParserHandler(BaseHandler):
         )
         return self.cursor.fetchall()
 
+    def get_domain(self, domain_id):
+        self.cursor.execute(
+            """
+            SELECT DomainUrl FROM Domain
+            WHERE id=%s
+            """, (
+                domain_id
+            )
+        )
+        return self.cursor.fetchone()[0]
+

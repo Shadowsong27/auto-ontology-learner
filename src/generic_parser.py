@@ -1,9 +1,8 @@
 from handler import ParserHandler
 from model import CandidateText, AnchorText
-from common import build_clean_soup, text_to_sentences, tag
-from bs4 import Tag
-import os
+from common import build_clean_soup, tag
 
+import nltk
 import logging
 
 
@@ -21,17 +20,14 @@ class SimpleGenericParser:
         for body in bodies:
 
             page_source = body[0]
-            soup = build_clean_soup(page_source)
             candidates = self.parse_each(body[0])
             # self.parse_anchor_text(candidates)
-            self.parse_short_text(candidates)
+            # self.parse_short_text(candidates)
             self.parse_long_text(candidates)
             # TODO:
             # 1. depth indexing and obtain indexed HTML tree (pause)
             # 2. rule-based classification
             # 3. class-level information parsing and storage
-
-            break
 
         logging.info("Parsing of domain {} complete".format(domain_id))
 
@@ -106,14 +102,47 @@ class SimpleGenericParser:
                 print(AnchorText(direction=direction, parent_object=candidate))
 
     def parse_short_text(self, candidates):
+        """
+        Phone
+        Fax
+        Time
+        Address
+        Copyright
+
+        Rule-based method for identifying short objects
+
+        attributes:
+
+        1. text
+        2. analysed_html
+        3. type
+        4. object_type
+        5. value
+
+        :param candidates:
+        :return:
+        """
         for candidate in candidates:
             if candidate.type == 'short':
-                print(candidate)
+                logging.info(candidate)
 
     def parse_long_text(self, candidates):
+        """This section will contain the exact parsing logic for relation, a relation is counted as an attribute
+        similar to the href value in anchor text
+
+
+        1. text
+        2. analysed_html
+        3. type
+        4. object 1 (applicable for search)
+        5. object 2 (applicable for search)
+        6. relation (applicable for search)
+
+        """
+
         for candidate in candidates:
             if candidate.type == 'long':
-                print(candidate)
+                logging.info(candidate)
 
     def complete_link(self, link):
         if link[:4] != "http":

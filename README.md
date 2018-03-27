@@ -151,6 +151,10 @@ compare candidate words with Wikipedia  (dbpedia)
 1. parse and store data
 2. 
 
+### NER
+
+https://ac.els-cdn.com/S1877042811024232/1-s2.0-S1877042811024232-main.pdf?_tid=3146de3c-585c-4e68-8cba-a818d97742cd&acdnat=1522147067_8d0880783ce0e14cc3a18e06d4ad08ac
+
 
 
 

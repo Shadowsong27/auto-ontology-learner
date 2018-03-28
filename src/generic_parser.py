@@ -10,6 +10,7 @@ class SimpleGenericParser:
 
     def __init__(self):
         self.handler = ParserHandler()
+        self.candidate_parse = CandidateParser()
         self.domain = None
 
     def execute(self, domain_id):
@@ -18,65 +19,32 @@ class SimpleGenericParser:
         bodies = self.handler.get_domain_bodies_by_id(domain_id)
 
         for body in bodies:
-
             page_source = body[0]
-            candidates = self.parse_each(body[0])
-            # self.parse_anchor_text(candidates)
-            # self.parse_short_text(candidates)
-            self.parse_long_text(candidates)
-            # TODO:
-            # 1. depth indexing and obtain indexed HTML tree (pause)
-            # 2. rule-based classification
+
+            # parsing
+            candidates = self.parse_candidate_text(page_source)
+            candidates = self.parse_candidate_type(candidates)
+            anchor_text_candidates = self.candidate_parse.parse_anchor_text(candidates)
+            short_text_candidates = self.candidate_parse.parse_short_text(candidates)
+            long_text_candidates = self.candidate_parse.parse_long_text(candidates)
+
+            # storage
             # 3. class-level information parsing and storage
+            # store each list into different tables
 
         logging.info("Parsing of domain {} complete".format(domain_id))
 
-    def parse_each(self, body):
-        soup = build_clean_soup(body)
-        candidates = self.extract_candidate_text(soup)
-        self.classify_candidate_type(candidates)
-        return candidates
+    def parse_candidate_text(self, page_source):
+        """
+        parse page source into candidates that contain only text and source html
 
-    def classify_candidate_type(self, candidates):
-        for candidate in candidates:
+        """
+        soup = build_clean_soup(page_source)
 
-            # is anchor test?
-            resp = self.is_anchor_text(candidate)
-
-            if resp:
-                candidate.type = 'anchor'
-            else:
-                if self.is_complete_sentence(candidate.text):
-                    candidate.type = 'long'
-                else:
-                    candidate.type = 'short'
-
-    @staticmethod
-    def is_anchor_text(candidate):
-        try:
-            resp = candidate.analysed_html['href']
-            return resp
-        except KeyError:
-            return False
-
-    @staticmethod
-    def is_complete_sentence(text):
-        tags = tag(text)
-        list_of_tags = set(map(lambda x: x[1], tags))
-
-        diversity_of_tags = len(list_of_tags)
-
-        if diversity_of_tags >= 10:
-            return True
-        else:
-            return False
-
-    def extract_candidate_text(self, soup):
         candidates = []
 
-        # classification
         for child in soup.find('body').findChildren():
-            if self.is_atomic(child):
+            if self.candidate_parse.is_atomic(child):
                 text = child.text.strip()
 
                 if "\n" in text:
@@ -87,13 +55,25 @@ class SimpleGenericParser:
 
         return candidates
 
-    @staticmethod
-    def is_atomic(soup_object):
-        for child in soup_object.findChildren():
-            if child.text != '':
-                return False
+    def parse_candidate_type(self, candidates):
+        """
+        parse (classify) the type of candidates based on existing available data
+        such as source HTML and text
 
-        return True
+        """
+        for candidate in candidates:
+
+            if self.candidate_parse.is_anchor_text(candidate):
+                candidate.type = 'anchor'
+            elif self.candidate_parse.is_short_text(candidate):
+                candidate.type = 'short'
+            else:
+                candidate.type = 'long'
+
+        return candidates
+
+
+class CandidateParser:
 
     def parse_anchor_text(self, candidates):
         for candidate in candidates:
@@ -149,6 +129,30 @@ class SimpleGenericParser:
             return self.domain + link
         else:
             return link
+
+    @staticmethod
+    def is_anchor_text(candidate):
+        return candidate.analysed_html.has_attr('href') or candidate.analysed_html.has_attr('src')
+
+    @staticmethod
+    def is_short_text(candidate):
+        tags = tag(candidate.text)
+        list_of_tags = set(map(lambda x: x[1], tags))
+
+        diversity_of_tags = len(list_of_tags)
+
+        if diversity_of_tags >= 10:  # more likely to be a sentence if the diversity of tags are high
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_atomic(soup_object):
+        for child in soup_object.findChildren():
+            if child.text != '':
+                return False
+
+        return True
 
 
 if __name__ == '__main__':

@@ -156,7 +156,7 @@ compare candidate words with Wikipedia  (dbpedia)
 https://ac.els-cdn.com/S1877042811024232/1-s2.0-S1877042811024232-main.pdf?_tid=3146de3c-585c-4e68-8cba-a818d97742cd&acdnat=1522147067_8d0880783ce0e14cc3a18e06d4ad08ac
 
 
-
+https://pdfs.semanticscholar.org/02df/3c6291b22ced6f8e1fb4e8a9c3a36cd149c0.pdf
 
 
 
@@ -239,7 +239,7 @@ Scalability
 
 TODO: indexing of HTML tree
 
-grouping of short keywords to form linked short text
+grouping of short keywords to form linked short text (achieve by using `find_siblings` if have time)
 
 Data should be stored in 3 different tables.
 

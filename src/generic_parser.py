@@ -1,16 +1,18 @@
 from handler import ParserHandler
-from model import CandidateText, AnchorText
-from common import build_clean_soup, tag
+from model import CandidateText, AnchorText, ShortText
+from common import build_clean_soup, tag, remove_punctuation
 
+import re
 import nltk
 import logging
+import natty
+import usaddress
 
 
 class SimpleGenericParser:
 
     def __init__(self):
         self.handler = ParserHandler()
-        self.candidate_parse = CandidateParser()
         self.domain = None
 
     def execute(self, domain_id):
@@ -22,19 +24,22 @@ class SimpleGenericParser:
             page_source = body[0]
 
             # parsing
-            candidates = self.parse_candidate_text(page_source)
-            candidates = self.parse_candidate_type(candidates)
-            anchor_text_candidates = self.candidate_parse.parse_anchor_text(candidates)
-            short_text_candidates = self.candidate_parse.parse_short_text(candidates)
-            long_text_candidates = self.candidate_parse.parse_long_text(candidates)
+            candidates = self._parse_candidate_text(page_source)
+            self._parse_candidate_type(candidates)
+            anchor_text_candidates = self._parse_anchor_text(candidates)
+            short_text_candidates = self._parse_short_text(candidates)
+            # long_text_candidates = self._parse_long_text(candidates)
 
+            logging.info(short_text_candidates)
             # storage
             # 3. class-level information parsing and storage
             # store each list into different tables
 
+            break
+
         logging.info("Parsing of domain {} complete".format(domain_id))
 
-    def parse_candidate_text(self, page_source):
+    def _parse_candidate_text(self, page_source):
         """
         parse page source into candidates that contain only text and source html
 
@@ -44,7 +49,7 @@ class SimpleGenericParser:
         candidates = []
 
         for child in soup.find('body').findChildren():
-            if self.candidate_parse.is_atomic(child):
+            if self.is_atomic(child):
                 text = child.text.strip()
 
                 if "\n" in text:
@@ -55,7 +60,7 @@ class SimpleGenericParser:
 
         return candidates
 
-    def parse_candidate_type(self, candidates):
+    def _parse_candidate_type(self, candidates):
         """
         parse (classify) the type of candidates based on existing available data
         such as source HTML and text
@@ -63,50 +68,80 @@ class SimpleGenericParser:
         """
         for candidate in candidates:
 
-            if self.candidate_parse.is_anchor_text(candidate):
+            if self.is_anchor_text(candidate):
                 candidate.type = 'anchor'
-            elif self.candidate_parse.is_short_text(candidate):
+            elif self.is_short_text(candidate):
                 candidate.type = 'short'
             else:
                 candidate.type = 'long'
 
         return candidates
 
-
-class CandidateParser:
-
-    def parse_anchor_text(self, candidates):
+    def _parse_anchor_text(self, candidates):
+        result = []
         for candidate in candidates:
             if candidate.type == 'anchor':
                 direction = self.complete_link(candidate.analysed_html['href'])
-                print(AnchorText(direction=direction, parent_object=candidate))
+                result.append(AnchorText(direction=direction, parent_object=candidate))
 
-    def parse_short_text(self, candidates):
+        return result
+
+    def _parse_short_text(self, candidates):
         """
-        Phone
-        Fax
-        Time
-        Address
-        Copyright
-
         Rule-based method for identifying short objects
 
-        attributes:
-
-        1. text
-        2. analysed_html
-        3. type
-        4. object_type
-        5. value
-
-        :param candidates:
-        :return:
         """
+        result = []
         for candidate in candidates:
-            if candidate.type == 'short':
-                logging.info(candidate)
 
-    def parse_long_text(self, candidates):
+            if candidate.type == 'short':
+
+                input_text = remove_punctuation(candidate.text)
+
+                # copyright
+                if self.is_copyright(input_text):
+                    result.append(ShortText(concept_type='copyright', parent_object=candidate))
+                    continue
+
+                # check phone and fax
+                elif self.is_numeric_text(input_text):
+                    if self.is_phone(input_text):
+                        result.append(ShortText(
+                            concept_type='phone',
+                            parent_object=candidate
+                        ))
+                    elif self.is_fax(input_text):
+                        result.append(ShortText(
+                            concept_type='fax',
+                            parent_object=candidate
+                        ))
+
+                elif self.is_time(input_text):
+                    result.append(ShortText(
+                        concept_type='time',
+                        parent_object=candidate
+                    ))
+
+                elif self.is_address(input_text):
+                    result.append(ShortText(
+                        concept_type='phone',
+                        parent_object=candidate
+                    ))
+
+                elif candidate.analysed_html.name in ['h1', 'h2', 'h3', 'h4', 'h5', 'h6']:
+                    result.append(ShortText(
+                        concept_type='header',
+                        parent_object=candidate
+                    ))
+                else:
+                    result.append(ShortText(
+                        concept_type='unknown',
+                        parent_object=candidate
+                    ))
+
+        return result
+
+    def _parse_long_text(self, candidates):
         """This section will contain the exact parsing logic for relation, a relation is counted as an attribute
         similar to the href value in anchor text
 
@@ -124,6 +159,56 @@ class CandidateParser:
             if candidate.type == 'long':
                 logging.info(candidate)
 
+    @staticmethod
+    def is_time(text):
+        dp = natty.DateParser(text)
+        if dp.result() is not None:
+            return True
+        return False
+
+    @staticmethod
+    def is_address(text):
+        results = usaddress.parse(text)
+        diversity = set(map(lambda x: x[1], results))
+        if len(diversity) > 2:
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_copyright(text):
+        if "copyright" in text.lower():
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_phone(text):
+        if "p" in text.lower():
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_fax(text):
+        if "f" in text.lower():
+            return True
+        else:
+            return False
+
+    @staticmethod
+    def is_numeric_text(text):
+        counter = 0
+        test_string = remove_punctuation(text)
+        for char in test_string:
+            if char.isdigit():
+                counter += 1
+
+        if counter / len(test_string) > 0.6:
+            return True
+        else:
+            return False
+
     def complete_link(self, link):
         if link[:4] != "http":
             return self.domain + link
@@ -132,7 +217,7 @@ class CandidateParser:
 
     @staticmethod
     def is_anchor_text(candidate):
-        return candidate.analysed_html.has_attr('href') or candidate.analysed_html.has_attr('src')
+        return candidate.analysed_html.has_attr('href')  # or candidate.analysed_html.has_attr('src')
 
     @staticmethod
     def is_short_text(candidate):
@@ -142,9 +227,9 @@ class CandidateParser:
         diversity_of_tags = len(list_of_tags)
 
         if diversity_of_tags >= 10:  # more likely to be a sentence if the diversity of tags are high
-            return True
-        else:
             return False
+        else:
+            return True
 
     @staticmethod
     def is_atomic(soup_object):

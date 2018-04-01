@@ -1,6 +1,7 @@
 from handler import ParserHandler
 from model import CandidateText, AnchorText, ShortText
 from common import build_clean_soup, tag, remove_punctuation
+from src.language_extractor import SimpleKeywordsExtractor
 
 import re
 import nltk
@@ -13,6 +14,7 @@ class SimpleGenericParser:
 
     def __init__(self):
         self.handler = ParserHandler()
+        self.ke = SimpleKeywordsExtractor()
         self.domain = None
 
     def execute(self, domain_id):
@@ -20,7 +22,7 @@ class SimpleGenericParser:
         logging.info("Start parsing of domain {}".format(self.domain))
         bodies = self.handler.get_domain_bodies_by_id(domain_id)
 
-        for body in bodies:
+        for body in bodies[1:]:
             page_source = body[0]
 
             # parsing
@@ -28,9 +30,8 @@ class SimpleGenericParser:
             self._parse_candidate_type(candidates)
             anchor_text_candidates = self._parse_anchor_text(candidates)
             short_text_candidates = self._parse_short_text(candidates)
-            # long_text_candidates = self._parse_long_text(candidates)
+            long_text_candidates = self._parse_long_text(candidates)
 
-            logging.info(short_text_candidates)
             # storage
             # 3. class-level information parsing and storage
             # store each list into different tables
@@ -154,10 +155,19 @@ class SimpleGenericParser:
         6. relation (applicable for search)
 
         """
+        result = []
 
         for candidate in candidates:
             if candidate.type == 'long':
                 logging.info(candidate)
+                print(self.ke.generate_final_keywords(candidate.text))
+
+        # substring grouping
+        # tokenize sentence
+        # if two words are in the same sentence
+        # extract string in the middle and formulate relations
+
+        return result
 
     @staticmethod
     def is_time(text):

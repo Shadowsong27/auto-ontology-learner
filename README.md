@@ -170,11 +170,15 @@ Good intro to relation extraction
 http://www.cs.cmu.edu/~nbach/papers/A-survey-on-Relation-Extraction.pdf
 
 http://aclweb.org/anthology/W17-2322
-
+Stanford Relation Extractor
+MITIE
+OpenIE
+GATE
 Two main approaches: 
 
 1. rule-based by identifying the keywords (heuristic))
 2. Machine learning approach (described below)
+
 
 http://ceur-ws.org/Vol-1064/Nebhi_Rule-Based.pdf
 

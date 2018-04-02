@@ -16,16 +16,19 @@ class BaseHandler:
 class PosPatternHandler(BaseHandler):
 
     def insert_pos_pattern(self, pair):
-        self.cursor.execute(
-            """
-            INSERT INTO PosDistribution (TagString, Frequency, Type)
-            VALUES (%s, %s, %s)
-            """, (
-                pair[0],
-                pair[1],
-                pair[2]
+        try:
+            self.cursor.execute(
+                """
+                INSERT INTO PosDistribution (TagString, Frequency, Type)
+                VALUES (%s, %s, %s)
+                """, (
+                    pair[0],
+                    pair[1],
+                    pair[2]
+                )
             )
-        )
+        except pymysql.err.IntegrityError:
+            pass
 
     def truncate_pos_dist(self):
         self.cursor.execute(

@@ -1,7 +1,6 @@
 import logging
-
+from model import Keyword
 from common import *
-
 from handler import PosPatternHandler
 
 
@@ -10,8 +9,8 @@ class SimpleKeywordsExtractor:
     def __init__(self):
         self.handler = PosPatternHandler()
 
-    def generate_base_candidates(self, target_text):
-        candidate_patterns = self.handler.get_patterns_above_ratio(0.05)
+    def _generate_base_candidates(self, target_text):
+        candidate_patterns = self.handler.get_patterns_above_ratio(0.03)
         candidate_patterns = list(map(lambda x: x[0], candidate_patterns))
 
         result_list = []
@@ -33,7 +32,7 @@ class SimpleKeywordsExtractor:
         return result_list
 
     @staticmethod
-    def upward_grouping(pre_list, tar_list):
+    def _upward_grouping(pre_list, tar_list):
         result = set()
         for pre in pre_list:
             for tar in tar_list:
@@ -44,10 +43,23 @@ class SimpleKeywordsExtractor:
 
     def generate_final_keywords(self, target_text):
         final = []
-        result = self.generate_base_candidates(target_text)
+        result = self._generate_base_candidates(target_text)
 
         for item in zip(result, result[1:]):
-            final += self.upward_grouping(*item)
+            final += self._upward_grouping(*item)
+
+        sentences = text_to_sentences(target_text)
+
+        final = [Keyword(text=item) for item in final]
+
+        # mark sentences index
+        for i in range(len(sentences)):
+            sentence = sentences[i]
+            for keyword in final:
+                if keyword.text in sentence:
+                    keyword.sentence_start_pos = sentence.index(keyword.tokens[0])
+                    keyword.sentence_end_pos = keyword.sentence_start_pos + len(keyword.text)
+                    keyword.sentence_index = i
 
         return final
 

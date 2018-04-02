@@ -4,6 +4,17 @@ class BaseModel:
         return str(self.__dict__)
 
 
+class Keyword(BaseModel):
+
+    def __init__(self, text):
+        self.text = text
+        self.sentence_index = None
+        self.sentence_start_pos = None
+        self.sentence_end_pos = None
+        self.tokens = text.split(" ")
+        self.length = len(self.tokens)
+
+
 class CandidateText(BaseModel):
 
     def __init__(self, text, analysed_html):

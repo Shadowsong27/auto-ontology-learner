@@ -1,6 +1,6 @@
 from handler import ParserHandler
 from model import CandidateText, AnchorText, ShortText
-from common import build_clean_soup, tag, remove_punctuation
+from common import build_clean_soup, tag, remove_punctuation, text_to_sentences
 from src.language_extractor import SimpleKeywordsExtractor
 
 import re
@@ -159,8 +159,28 @@ class SimpleGenericParser:
 
         for candidate in candidates:
             if candidate.type == 'long':
-                logging.info(candidate)
-                print(self.ke.generate_final_keywords(candidate.text))
+                keywords = self.ke.generate_final_keywords(candidate.text)
+                sentences = text_to_sentences(candidate.text)
+
+                # find relations / either relation or new grouping
+                for i in range(len(sentences)):
+                    sentence = sentences[i]
+                    logging.info(sentence)
+                    keywords_group = list(filter(lambda x: x.sentence_index == i, keywords))
+
+                    for item in zip(keywords_group, keywords_group[1:]):
+                        keyword_1, keyword_2 = item
+
+                        if keyword_1.sentence_end_pos >= keyword_2.sentence_start_pos:
+                            # overlapping, could be combined into one word
+
+                            print(sentence[keyword_1.sentence_start_pos: keyword_2.sentence_end_pos].strip())
+
+                        else:
+
+                            print(keyword_1, keyword_2)
+
+                break
 
         # substring grouping
         # tokenize sentence

@@ -2,6 +2,7 @@ import logging
 from model import Keyword
 from common import *
 from handler import PosPatternHandler
+from resources.stanford_openie.open_ie_api import call_api_single
 
 
 class SimpleKeywordsExtractor:
@@ -65,7 +66,32 @@ class SimpleKeywordsExtractor:
 
 
 class SimpleRelationsExtractor:
-    pass
+
+    def generate_relations(self, target_text, keywords):
+        sentences = text_to_sentences(target_text)
+
+        # find relations / either relation or new grouping
+        for i in range(len(sentences)):
+            sentence = sentences[i]
+            logging.info(sentence)
+            keywords_group = list(filter(lambda x: x.sentence_index == i, keywords))
+
+            for item in zip(keywords_group, keywords_group[1:]):
+                keyword_1, keyword_2 = item
+                logging.info(item)
+                if keyword_1.sentence_end_pos >= keyword_2.sentence_start_pos:
+                    # overlapping, could be combined into one word
+
+                    word = sentence[keyword_1.sentence_start_pos: keyword_2.sentence_end_pos].strip()
+
+                    # open IE
+
+                else:
+
+                    word_between = sentence[keyword_1.sentence_end_pos: keyword_2.sentence_start_pos]
+                    print(tag(word_between))
+                    # open IE
+        return []
 
 
 class SimpleConceptsExtractor:

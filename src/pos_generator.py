@@ -1,7 +1,17 @@
+"""
+
+This class handles the statistical calculation of POS taggers
+distribution in general English corpora.
+
+The corpora used is Gutenberg, and the interface used is NLTK.
+
+"""
+
+
 import logging
 
 from nltk.corpus import gutenberg
-from src.common import *
+from common import *
 
 from handler import PosPatternHandler
 
@@ -15,48 +25,51 @@ class PosPatternExtractor:
         self.pattern_dict = {}
 
     def generate_pattern_stats(self):
-        """
-        The statistical distribution of POS tags are generated from NLTK
-        Gutenberg Corpus and Web text, both accounted for the relatively
-        formal English and Web like English.
-
-        called for gutenberg: gutenberg.fileids()
-        called for webtext: webtext.fileids()
-
-        :return:
-        """
-        # update distribution dict
-        self.update_dict_gutenberg()
-
-        # for file_id in nltk.corpus.webtext.fileids():
-
-        # insert distribution dict
+        logging.info("Truncate old distribution")
         self.handler.truncate_pos_dist()
 
-        # TODO: implement a better rule selection
+        logging.info("Tag corpora with POS tagger")
+        self._tag_corpora()
+
+        logging.info("Generate new noun phrases distribution")
+        self.generate_noun_phrase_stats()
+
+        logging.info("Generate new verb phrases distribution")
+        self.generate_verb_phrase_stats()
+
+        logging.info("Process complete")
+
+    def generate_noun_phrase_stats(self):
         for pattern in self.pattern_dict.keys():
             if "NN" in pattern:
                 if pattern[-2:] != "IN" and \
-                                pattern[-2:] != "TO" and \
-                                "CC" not in pattern and \
-                                "CD" not in pattern and \
-                                pattern[-2:] != "DT" and \
-                                pattern[-2:] != "VBD" and \
-                                pattern[:2] != "IN":
-                    pair = (pattern, self.pattern_dict[pattern])
+                        pattern[-2:] != "TO" and \
+                        "CC" not in pattern and \
+                        "CD" not in pattern and \
+                        pattern[-2:] != "DT" and \
+                        pattern[-2:] != "VBD" and \
+                        pattern[:2] != "IN":
+                    pair = (pattern, self.pattern_dict[pattern], "noun")
                     self.handler.insert_pos_pattern(pair)
 
         self.handler.commit()
 
-    def update_dict_gutenberg(self):
+    def generate_verb_phrase_stats(self):
+        for pattern in self.pattern_dict.keys():
+            if "VB" in pattern:
+                pair = (pattern, self.pattern_dict[pattern], "verb")
+                self.handler.insert_pos_pattern(pair)
+
+        self.handler.commit()
+
+    def _tag_corpora(self):
         for file_id in nltk.corpus.gutenberg.fileids():
-            logging.info("processing text: {}".format(file_id))
+            logging.info("Process text: {}".format(file_id))
 
             text = gutenberg.raw(file_id)
             tagged_text = tag(text)
 
             for i in range(1, self.NGRAM_UPPER + 1):
-                logging.info("currently at {} gram".format(i))
                 self._get_pos_pattern_distribution(tagged_text, i)
 
     def _get_pos_pattern_distribution(self, tagged_text, n):

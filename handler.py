@@ -18,11 +18,12 @@ class PosPatternHandler(BaseHandler):
     def insert_pos_pattern(self, pair):
         self.cursor.execute(
             """
-            INSERT INTO PosDistribution (TagString, Frequency)
+            INSERT INTO PosDistribution (TagString, Frequency, Type)
             VALUES (%s, %s)
             """, (
                 pair[0],
-                pair[1]
+                pair[1],
+                pair[2]
             )
         )
 

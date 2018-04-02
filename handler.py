@@ -19,7 +19,7 @@ class PosPatternHandler(BaseHandler):
         self.cursor.execute(
             """
             INSERT INTO PosDistribution (TagString, Frequency, Type)
-            VALUES (%s, %s)
+            VALUES (%s, %s, %s)
             """, (
                 pair[0],
                 pair[1],

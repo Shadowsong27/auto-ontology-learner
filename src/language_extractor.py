@@ -4,7 +4,7 @@ from common import *
 from handler import PosPatternHandler
 
 NOUN_PHRASE_THRESHOLD = 0.03
-VERB_PHRASE_THRESHOLD = 0.01
+VERB_PHRASE_THRESHOLD = 0.02
 
 
 class SimpleKeywordsExtractor:
@@ -116,15 +116,49 @@ class SimpleRelationsExtractor:
         self.ke_v = SimpleKeywordsExtractor('verb')
 
     def generate_relations(self, target_text):
+        relations = []
         noun_phrases = self.ke_n.generate_keywords(target_text)
         verb_phrases = self.ke_v.generate_keywords(target_text)
+        sentences = text_to_sentences(target_text)
 
-        for i in range(len(text_to_sentences(target_text))):
+        for i in range(len(sentences)):
+            sentence = sentences[i]
             cur_nouns = list(filter(lambda x: x.sentence_index == i, noun_phrases))
             cur_verbs = list(filter(lambda x: x.sentence_index == i, verb_phrases))
 
             logging.debug(cur_nouns)
-            logging.debug(cur_verbs)
+
+            if len(cur_nouns) == 2:
+                for item in cur_verbs:
+                    relations.append((
+                        cur_nouns[0],
+                        cur_nouns[1],
+                        item,
+                        sentence
+                    ))
+            elif len(cur_nouns) == 1:
+                for item in cur_verbs:
+                    relations.append((
+                        cur_nouns[0],
+                        None,
+                        item,
+                        sentence
+                    ))
+            else:
+                for noun_item in zip(cur_nouns, cur_nouns[1:]):
+                    lower = noun_item[0].sentence_start_pos
+                    upper = noun_item[1].sentence_end_pos
+
+                    for item in verb_phrases:
+                        if lower < item.sentence_start_pos < upper:
+                            relations.append((
+                                noun_item[0],
+                                noun_item[1],
+                                item,
+                                sentence
+                            ))
+
+        return relations
 
 
 class SimpleConceptsExtractor:

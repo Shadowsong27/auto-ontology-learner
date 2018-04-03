@@ -1,5 +1,5 @@
 from handler import ParserHandler
-from model import CandidateText, AnchorText, ShortText
+from model import CandidateText, AnchorText, ShortText, LongText
 from common import build_clean_soup, tag, remove_punctuation, text_to_sentences
 from src.language_extractor import SimpleKeywordsExtractor, SimpleRelationsExtractor
 
@@ -37,7 +37,9 @@ class SimpleGenericParser:
             # 3. class-level information parsing and storage
             # store each list into different tables
 
-            break
+            self.handler.insert_anchor()
+            self.handler.insert_short()
+            self.handler.insert_long()
 
         logging.info("Parsing of domain {} complete".format(domain_id))
 
@@ -161,7 +163,18 @@ class SimpleGenericParser:
         for candidate in candidates:
             if candidate.type == 'long':
                 relations = self.re.generate_relations(candidate.text)
-                break
+
+                for relation in relations:
+                    primary, secondary, verb, sentence = relation
+                    long_text = LongText(
+                        primary_noun=primary,
+                        secondary_noun=secondary,
+                        verb=verb,
+                        parent_object=candidate,
+                        sentence=sentence
+                    )
+
+                    result.append(long_text)
 
         return result
 

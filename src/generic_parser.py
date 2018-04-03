@@ -1,6 +1,6 @@
 from handler import ParserHandler
 from model import CandidateText, AnchorText, ShortText, LongText
-from common import build_clean_soup, tag, remove_punctuation, text_to_sentences
+from common import build_clean_soup, tag, remove_punctuation
 from src.language_extractor import SimpleRelationsExtractor
 
 import logging
@@ -181,8 +181,6 @@ class SimpleGenericParser:
 
         return result
 
-
-
     @staticmethod
     def is_time(text):
         dp = natty.DateParser(text)
@@ -228,7 +226,7 @@ class SimpleGenericParser:
             if char.isdigit():
                 counter += 1
         try:
-            if counter / len(test_string) > 0.6:
+            if counter / len(test_string) > 0.7:
                 return True
             else:
                 return False
@@ -252,7 +250,7 @@ class SimpleGenericParser:
 
         diversity_of_tags = len(list_of_tags)
 
-        if diversity_of_tags >= 10:  # more likely to be a sentence if the diversity of tags are high
+        if diversity_of_tags >= 8:  # more likely to be a sentence if the diversity of tags are high
             return False
         else:
             return True

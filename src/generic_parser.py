@@ -12,7 +12,6 @@ class SimpleGenericParser:
 
     def __init__(self):
         self.handler = ParserHandler()
-
         self.re = SimpleRelationsExtractor()
         self.domain = None
 
@@ -107,10 +106,11 @@ class SimpleGenericParser:
 
                 # copyright
                 if self.is_copyright(input_text):
-                    result.append(ShortText(concept_type='copyright', parent_object=candidate))
-                    continue
+                    result.append(ShortText(
+                        concept_type='copyright',
+                        parent_object=candidate
+                    ))
 
-                # check phone and fax
                 elif self.is_numeric_text(input_text):
                     if self.is_phone(input_text):
                         result.append(ShortText(
@@ -180,6 +180,8 @@ class SimpleGenericParser:
                     result.append(long_text)
 
         return result
+
+
 
     @staticmethod
     def is_time(text):

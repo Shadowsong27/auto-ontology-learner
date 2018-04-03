@@ -1,6 +1,7 @@
 import pymysql
 
 from access_token import LOCAL_DATABASE_ACCESS
+from hashlib import blake2b
 
 
 class BaseHandler:
@@ -150,12 +151,13 @@ class ParserHandler(BaseHandler):
         try:
             self.cursor.execute(
                 """
-                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, ParsedData)
-                VALUES (%s, %s, %s)
+                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, ParsedData, HashedParsed)
+                VALUES (%s, %s, %s, %s)
                 """, (
                     "anchor",
                     anchor.text,
-                    anchor.direction
+                    anchor.direction,
+                    self.get_hashed(anchor.direction)
                 )
             )
         except pymysql.err.IntegrityError:
@@ -165,31 +167,47 @@ class ParserHandler(BaseHandler):
         try:
             self.cursor.execute(
                 """
-                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, ParsedData)
-                VALUES (%s, %s, %s)
+                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, SecondarySearch, ParsedData, HashedParsed)
+                VALUES (%s, %s, %s, %s, %s)
                 """, (
                     "short",
                     short.concept_type,
-                    short.text
+                    short.text,
+                    short.text,
+                    self.get_hashed(short.text)
                 )
             )
         except pymysql.err.IntegrityError:
             pass
 
     def insert_long(self, long):
+        if long.secondary_noun is None:
+            sec = None
+        else:
+            sec = long.secondary_noun.text
+
         try:
             self.cursor.execute(
                 """
                 INSERT INTO KnowledgeGraph 
                   (SearchType, PrimarySearch, SecondarySearch, TertiarySearch,
-                  ParsedData, OriginalContent)
-                VALUES (%s, %s, %s)
+                  ParsedData, OriginalContent, HashedParsed)
+                VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """, (
                     "long",
-                    long.primary_noun,
-                    long.secondary_noun,
-                    long.verb,
+                    long.primary_noun.text,
+                    sec,
+                    long.verb.text,
+                    None,
+                    long.sentence,
+                    self.get_hashed(long.sentence)
                 )
             )
         except pymysql.err.IntegrityError:
             pass
+
+    @staticmethod
+    def get_hashed(original_str):
+        hasher = blake2b(digest_size=32)
+        hasher.update(original_str.encode("utf-8"))
+        return hasher.hexdigest()

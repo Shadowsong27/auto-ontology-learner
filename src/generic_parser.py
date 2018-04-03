@@ -14,7 +14,7 @@ class SimpleGenericParser:
 
     def __init__(self):
         self.handler = ParserHandler()
-        self.ke = SimpleKeywordsExtractor()
+
         self.re = SimpleRelationsExtractor()
         self.domain = None
 
@@ -160,8 +160,7 @@ class SimpleGenericParser:
 
         for candidate in candidates:
             if candidate.type == 'long':
-                keywords = self.ke.generate_final_keywords(candidate.text)
-                relations = self.re.generate_relations(candidate.text, keywords)
+                relations = self.re.generate_relations(candidate.text)
                 break
 
         return result

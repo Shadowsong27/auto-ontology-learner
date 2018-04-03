@@ -38,7 +38,7 @@ class PosPatternHandler(BaseHandler):
         )
         self.conn.commit()
 
-    def get_patterns_above_ratio(self, ratio):
+    def get_patterns_above_ratio_for_noun(self, ratio):
         self.cursor.execute(
             """
             SELECT 
@@ -48,6 +48,23 @@ class PosPatternHandler(BaseHandler):
                   SELECT MAX(Frequency) FROM PosDistribution
                 ) AS ratio
             FROM PosDistribution
+            WHERE Type='noun'
+            HAVING ratio >= %s ORDER BY ratio DESC
+            """, (ratio, )
+        )
+        return self.cursor.fetchall()
+
+    def get_patterns_above_ratio_for_verb(self, ratio):
+        self.cursor.execute(
+            """
+            SELECT 
+              TagString, 
+              Frequency / 
+                (
+                  SELECT MAX(Frequency) FROM PosDistribution
+                ) AS ratio
+            FROM PosDistribution
+            WHERE Type='verb'
             HAVING ratio >= %s ORDER BY ratio DESC
             """, (ratio, )
         )

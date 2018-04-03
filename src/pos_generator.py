@@ -56,6 +56,7 @@ class PosPatternExtractor:
 
     def generate_verb_phrase_stats(self):
         for pattern in self.pattern_dict.keys():
+
             if "VB" in pattern:
                 pair = (pattern, self.pattern_dict[pattern], "verb")
                 self.handler.insert_pos_pattern(pair)

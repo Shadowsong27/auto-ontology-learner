@@ -14,6 +14,9 @@ class Keyword(BaseModel):
         self.tokens = text.split(" ")
         self.length = len(self.tokens)
 
+    def __eq__(self, other):
+        return self.text == other.text
+
 
 class CandidateText(BaseModel):
 

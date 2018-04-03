@@ -250,7 +250,7 @@ class SimpleGenericParser:
 
         diversity_of_tags = len(list_of_tags)
 
-        if diversity_of_tags >= 8:  # more likely to be a sentence if the diversity of tags are high
+        if diversity_of_tags >= 5:  # more likely to be a sentence if the diversity of tags are high
             return False
         else:
             return True
@@ -266,4 +266,4 @@ class SimpleGenericParser:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    SimpleGenericParser().execute(1)
+    SimpleGenericParser().execute(3)

@@ -162,6 +162,8 @@ class ParserHandler(BaseHandler):
             )
         except pymysql.err.IntegrityError:
             pass
+        except pymysql.err.InternalError:
+            pass
 
     def insert_short(self, short):
         try:
@@ -171,13 +173,15 @@ class ParserHandler(BaseHandler):
                 VALUES (%s, %s, %s, %s, %s)
                 """, (
                     "short",
-                    short.concept_type,
                     short.text,
+                    short.concept_type,
                     short.text,
                     self.get_hashed(short.text)
                 )
             )
         except pymysql.err.IntegrityError:
+            pass
+        except pymysql.err.InternalError:
             pass
 
     def insert_long(self, long):
@@ -204,6 +208,8 @@ class ParserHandler(BaseHandler):
                 )
             )
         except pymysql.err.IntegrityError:
+            pass
+        except pymysql.err.InternalError:
             pass
 
     @staticmethod

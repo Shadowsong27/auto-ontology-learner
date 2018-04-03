@@ -23,12 +23,13 @@ class SimpleGenericParser:
         logging.info("Start parsing of domain {}".format(self.domain))
         bodies = self.handler.get_domain_bodies_by_id(domain_id)
 
-        for body in bodies[1:]:
-            page_source = body[0]
+        for body in bodies:
+            page_source, hashed_url = body
 
             # parsing
             candidates = self._parse_candidate_text(page_source)
             self._parse_candidate_type(candidates)
+
             anchor_text_candidates = self._parse_anchor_text(candidates)
             short_text_candidates = self._parse_short_text(candidates)
             long_text_candidates = self._parse_long_text(candidates)
@@ -37,9 +38,15 @@ class SimpleGenericParser:
             # 3. class-level information parsing and storage
             # store each list into different tables
 
-            self.handler.insert_anchor()
-            self.handler.insert_short()
-            self.handler.insert_long()
+            for anchor in anchor_text_candidates:
+                self.handler.insert_anchor(anchor)
+
+            for short in short_text_candidates:
+                self.handler.insert_short(short)
+
+            # self.handler.insert_long()
+
+        self.handler.commit()
 
         logging.info("Parsing of domain {} complete".format(domain_id))
 
@@ -222,10 +229,12 @@ class SimpleGenericParser:
         for char in test_string:
             if char.isdigit():
                 counter += 1
-
-        if counter / len(test_string) > 0.6:
-            return True
-        else:
+        try:
+            if counter / len(test_string) > 0.6:
+                return True
+            else:
+                return False
+        except ZeroDivisionError:
             return False
 
     def complete_link(self, link):
@@ -260,5 +269,5 @@ class SimpleGenericParser:
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.INFO)
     SimpleGenericParser().execute(1)

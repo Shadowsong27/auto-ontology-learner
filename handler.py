@@ -129,7 +129,7 @@ class ParserHandler(BaseHandler):
     def get_domain_bodies_by_id(self, domain_id):
         self.cursor.execute(
             """
-            SELECT Body FROM DomainBody
+            SELECT Body, HashedUrl FROM DomainBody
             WHERE DomainId=%s
             """, (domain_id, )
         )
@@ -145,4 +145,48 @@ class ParserHandler(BaseHandler):
             )
         )
         return self.cursor.fetchone()[0]
+
+    def insert_anchor(self, anchor):
+        try:
+            self.cursor.execute(
+                """
+                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, ParsedData)
+                VALUES (%s, %s, %s)
+                """, (
+                    "anchor",
+                    anchor.text,
+                    anchor.direction
+                )
+            )
+        except pymysql.err.IntegrityError:
+            pass
+
+    def insert_short(self, short):
+        try:
+            self.cursor.execute(
+                """
+                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, ParsedData)
+                VALUES (%s, %s, %s)
+                """, (
+                    "short",
+                    short.concept_type,
+                    short.text
+                )
+            )
+        except pymysql.err.IntegrityError:
+            pass
+
+    def insert_long(self, long):
+        try:
+            self.cursor.execute(
+                """
+                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, ParsedData)
+                VALUES (%s, %s, %s)
+                """, (
+                    "long",
+
+                )
+            )
+        except pymysql.err.IntegrityError:
+            pass
 

@@ -1,10 +1,8 @@
 from handler import ParserHandler
 from model import CandidateText, AnchorText, ShortText, LongText
 from common import build_clean_soup, tag, remove_punctuation, text_to_sentences
-from src.language_extractor import SimpleKeywordsExtractor, SimpleRelationsExtractor
+from src.language_extractor import SimpleRelationsExtractor
 
-import re
-import nltk
 import logging
 import natty
 import usaddress
@@ -35,16 +33,14 @@ class SimpleGenericParser:
             long_text_candidates = self._parse_long_text(candidates)
 
             # storage
-            # 3. class-level information parsing and storage
-            # store each list into different tables
-
             for anchor in anchor_text_candidates:
                 self.handler.insert_anchor(anchor)
 
             for short in short_text_candidates:
                 self.handler.insert_short(short)
 
-            # self.handler.insert_long()
+            for long in long_text_candidates:
+                self.handler.insert_long(long)
 
         self.handler.commit()
 

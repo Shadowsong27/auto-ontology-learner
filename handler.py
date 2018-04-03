@@ -180,13 +180,16 @@ class ParserHandler(BaseHandler):
         try:
             self.cursor.execute(
                 """
-                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, ParsedData)
+                INSERT INTO KnowledgeGraph 
+                  (SearchType, PrimarySearch, SecondarySearch, TertiarySearch,
+                  ParsedData, OriginalContent)
                 VALUES (%s, %s, %s)
                 """, (
                     "long",
-
+                    long.primary_noun,
+                    long.secondary_noun,
+                    long.verb,
                 )
             )
         except pymysql.err.IntegrityError:
             pass
-

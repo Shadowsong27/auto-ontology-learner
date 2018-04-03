@@ -164,6 +164,8 @@ class ParserHandler(BaseHandler):
             pass
         except pymysql.err.InternalError:
             pass
+        except pymysql.err.DataError:
+            pass
 
     def insert_short(self, short):
         try:
@@ -182,6 +184,8 @@ class ParserHandler(BaseHandler):
         except pymysql.err.IntegrityError:
             pass
         except pymysql.err.InternalError:
+            pass
+        except pymysql.err.DataError:
             pass
 
     def insert_long(self, long):
@@ -210,6 +214,8 @@ class ParserHandler(BaseHandler):
         except pymysql.err.IntegrityError:
             pass
         except pymysql.err.InternalError:
+            pass
+        except pymysql.err.DataError:
             pass
 
     @staticmethod

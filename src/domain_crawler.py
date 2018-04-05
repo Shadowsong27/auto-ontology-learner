@@ -1,13 +1,13 @@
-from hashlib import blake2b
-from queue import Queue
-from bs4 import BeautifulSoup
-
 import logging
 import random
+from hashlib import blake2b
+from queue import Queue
+
 import requests
 import urllib3
+from bs4 import BeautifulSoup
 
-from handler import CrawlerHandler
+from src.handler import CrawlerHandler
 
 
 class SimpleDomainCrawler:
@@ -138,5 +138,5 @@ class SimpleDomainCrawler:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.DEBUG)
-    c = SimpleDomainCrawler("http://www.aura.sg")
+    c = SimpleDomainCrawler("http://www.comp.nus.edu.sg")
     c.execute()

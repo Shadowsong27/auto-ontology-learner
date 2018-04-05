@@ -1,11 +1,11 @@
-from handler import ParserHandler
-from model import CandidateText, AnchorText, ShortText, LongText
-from common import build_clean_soup, tag, remove_punctuation
-from src.language_extractor import SimpleRelationsExtractor
-
 import logging
 import natty
 import usaddress
+
+from src.common import build_clean_soup, tag, remove_punctuation
+from src.model import CandidateText, AnchorText, ShortText, LongText
+from src.handler import ParserHandler
+from src.language_extractor import SimpleRelationsExtractor
 
 
 class SimpleGenericParser:
@@ -266,4 +266,4 @@ class SimpleGenericParser:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    SimpleGenericParser().execute(3)
+    SimpleGenericParser().execute(1)

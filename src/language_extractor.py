@@ -1,7 +1,9 @@
 import logging
-from model import Keyword
-from common import *
-from handler import PosPatternHandler
+
+from src.common import *
+from src.model import Keyword
+
+from src.handler import PosPatternHandler
 
 NOUN_PHRASE_THRESHOLD = 0.03
 VERB_PHRASE_THRESHOLD = 0.02

@@ -10,21 +10,20 @@ The corpora used is Gutenberg, and the interface used is NLTK.
 
 import logging
 
+from src.config import NGRAM_UPPER_THRESHOLD
+from src.common import *
 from nltk.corpus import gutenberg
-from common import *
-
-from handler import PosPatternHandler
+from src.handler import PosPatternHandler
 
 
 class PosPatternExtractor:
 
-    NGRAM_UPPER = 4
-
-    def __init__(self):
+    def __init__(self, corpora=None):
+        self.corpora = corpora
         self.handler = PosPatternHandler()
         self.pattern_dict = {}
 
-    def generate_pattern_stats(self):
+    def generate_pattern_stats(self, ):
         logging.info("Truncate old distribution")
         self.handler.truncate_pos_dist()
 
@@ -32,14 +31,14 @@ class PosPatternExtractor:
         self._tag_corpora()
 
         logging.info("Generate new noun phrases distribution")
-        self.generate_noun_phrase_stats()
+        self._generate_noun_phrase_stats()
 
         logging.info("Generate new verb phrases distribution")
-        self.generate_verb_phrase_stats()
+        self._generate_verb_phrase_stats()
 
         logging.info("Process complete")
 
-    def generate_noun_phrase_stats(self):
+    def _generate_noun_phrase_stats(self):
         for pattern in self.pattern_dict.keys():
             if "NN" in pattern:
                 if pattern[-2:] != "IN" and \
@@ -54,7 +53,7 @@ class PosPatternExtractor:
 
         self.handler.commit()
 
-    def generate_verb_phrase_stats(self):
+    def _generate_verb_phrase_stats(self):
         for pattern in self.pattern_dict.keys():
 
             if "VB" in pattern:
@@ -64,41 +63,46 @@ class PosPatternExtractor:
         self.handler.commit()
 
     def _tag_corpora(self):
-        for file_id in nltk.corpus.gutenberg.fileids():
-            logging.info("Process text: {}".format(file_id))
+        """
+        will generate the POS distribution from Gutenberg corpora
+        by default
+        allows customised corpora as well
+        :param corpora: list of str -> a list of corpus
+        :return: None
+        """
+        if self.corpora is None:
+            for file_id in nltk.corpus.gutenberg.fileids():
+                text = gutenberg.raw(file_id)
+                self._get_pos_distribution(text)
+        else:
+            for text in self.corpora:
+                self._get_pos_distribution(text)
 
-            text = gutenberg.raw(file_id)
-            tagged_text = tag(text)
+    def _get_pos_distribution(self, text):
+        tagged_text = tag(text)
+        for i in range(1, NGRAM_UPPER_THRESHOLD + 1):
+            grams = find_ngrams(tagged_text, i)
+            for item in grams:
+                next_item = 0
+                pattern = ""
+                for cur_gram in range(i):
+                    current_tag = item[cur_gram][1]
 
-            for i in range(1, self.NGRAM_UPPER + 1):
-                self._get_pos_pattern_distribution(tagged_text, i)
+                    if current_tag.isalpha():
+                        pattern += current_tag + " "
+                    else:
+                        next_item = 1
+                        break
 
-    def _get_pos_pattern_distribution(self, tagged_text, n):
-        grams = find_ngrams(tagged_text, n)
+                if next_item:
+                    continue
 
-        for item in grams:
+                pattern = pattern.strip()
 
-            next_item = 0
-
-            pattern = ""
-            for i in range(n):
-                current_tag = item[i][1]
-
-                if current_tag.isalpha():
-                    pattern += current_tag + " "
+                if pattern in self.pattern_dict:
+                    self.pattern_dict[pattern] += 1
                 else:
-                    next_item = 1
-                    break
-
-            if next_item:
-                continue
-
-            pattern = pattern.strip()
-
-            if pattern in self.pattern_dict:
-                self.pattern_dict[pattern] += 1
-            else:
-                self.pattern_dict[pattern] = 1
+                    self.pattern_dict[pattern] = 1
 
 
 if __name__ == '__main__':

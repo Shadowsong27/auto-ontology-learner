@@ -10,10 +10,10 @@ The corpora used is Gutenberg, and the interface used is NLTK.
 
 import logging
 
-from src.config import NGRAM_UPPER_THRESHOLD
-from src.common import *
 from nltk.corpus import gutenberg
-from src.handler import PosPatternHandler
+from src.config import NGRAM_UPPER_THRESHOLD
+
+from src.common.handler import PosPatternHandler
 
 
 class PosPatternExtractor:

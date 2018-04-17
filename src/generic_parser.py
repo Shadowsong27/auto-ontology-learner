@@ -1,14 +1,35 @@
 import logging
+
 import natty
 import usaddress
-
-from src.common import build_clean_soup, tag, remove_punctuation
-from src.model import CandidateText, AnchorText, ShortText, LongText
-from src.handler import ParserHandler
+from src.common.model import CandidateText, AnchorText, ShortText, LongText
+from src.common.utils import build_clean_soup, tag, remove_punctuation
+from src.common.handler import ParserHandler
 from src.language_extractor import SimpleRelationsExtractor
 
 
-class SimpleGenericParser:
+class BaseParser:
+
+    def __init__(self, target_text):
+        self.target_text = target_text
+
+    def parse(self):
+        """
+        The result of parsing should contain
+        1. primary search
+        2. secondary search
+        3. tertiary search
+        4. search type
+        5. hashed parse
+        :return:
+        """
+        pass
+
+    def has_probability(self):
+        pass
+
+
+class BaseGenericParser:
 
     def __init__(self):
         self.handler = ParserHandler()
@@ -70,7 +91,6 @@ class SimpleGenericParser:
         """
         parse (classify) the type of candidates based on existing available data
         such as source HTML and text
-
         """
         for candidate in candidates:
 
@@ -266,4 +286,4 @@ class SimpleGenericParser:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    SimpleGenericParser().execute(1)
+    BaseGenericParser().execute(1)

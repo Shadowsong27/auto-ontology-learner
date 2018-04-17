@@ -1,12 +1,8 @@
 import logging
 
-from src.common import *
-from src.model import Keyword
-
-from src.handler import PosPatternHandler
-
-NOUN_PHRASE_THRESHOLD = 0.03
-VERB_PHRASE_THRESHOLD = 0.02
+from src.common.model import Keyword
+from src.common.handler import PosPatternHandler
+from src.common.utils import *
 
 
 class SimpleKeywordsExtractor:

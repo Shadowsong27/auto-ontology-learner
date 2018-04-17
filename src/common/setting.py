@@ -1,0 +1,7 @@
+# pos distribution generator
+NGRAM_UPPER_THRESHOLD = 4
+
+# keyword
+NOUN_PHRASE_THRESHOLD = 0.03
+VERB_PHRASE_THRESHOLD = 0.02
+

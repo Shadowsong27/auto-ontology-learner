@@ -1,16 +1,15 @@
 import logging
 import random
-from hashlib import blake2b
-from queue import Queue
-
 import requests
 import urllib3
+
 from bs4 import BeautifulSoup
+from hashlib import blake2b
+from queue import Queue
+from src.common.handler import CrawlerHandler
 
-from src.handler import CrawlerHandler
 
-
-class SimpleDomainCrawler:
+class BaseDomainCrawler:
 
     """
     This class handles the downloading of body text from a given domain.
@@ -135,8 +134,3 @@ class SimpleDomainCrawler:
         domain = link_body.split("/")[0]
         return protocol + "//" + domain
 
-
-if __name__ == '__main__':
-    logging.basicConfig(level=logging.DEBUG)
-    c = SimpleDomainCrawler("http://www.comp.nus.edu.sg")
-    c.execute()

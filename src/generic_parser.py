@@ -94,9 +94,7 @@ class BaseGenericParser:
         """
         for candidate in candidates:
 
-            if self.is_anchor_text(candidate):
-                candidate.type = 'anchor'
-            elif self.is_short_text(candidate):
+            if self.is_short_text(candidate):
                 candidate.type = 'short'
             else:
                 candidate.type = 'long'

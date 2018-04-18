@@ -266,3 +266,11 @@ We could not achieven 100% accuracy, even in 20 years time.
 # Things still need to review
 NER
 Relationship extraction
+
+# To run GUI
+
+```bash
+export FLASK_APP=PycharmProjects/auto-ontology-learner/src/gui/main.py
+python3 -m flask run
+```
+

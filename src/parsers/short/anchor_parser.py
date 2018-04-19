@@ -1,4 +1,4 @@
-from src.generic_parser import BaseParser
+from src.parser_controller import BaseParser
 
 
 class AnchorParser(BaseParser):

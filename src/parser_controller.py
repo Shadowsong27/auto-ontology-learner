@@ -29,7 +29,7 @@ class BaseParser:
         pass
 
 
-class BaseGenericParser:
+class ParserController:
 
     def __init__(self):
         self.handler = ParserHandler()
@@ -284,4 +284,4 @@ class BaseGenericParser:
 
 if __name__ == '__main__':
     logging.basicConfig(level=logging.INFO)
-    BaseGenericParser().execute(1)
+    ParserController().execute(1)

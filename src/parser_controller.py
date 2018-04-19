@@ -1,44 +1,23 @@
 import logging
-
 import natty
 import usaddress
-from src.common.model import CandidateText, AnchorText, ShortText, LongText
+
+from config import selected_parsers
+from src.common.model import CandidateText, ShortText, LongText
 from src.common.utils import build_clean_soup, tag, remove_punctuation
 from src.common.handler import ParserHandler
-from src.language_extractor import SimpleRelationsExtractor
-
-
-class BaseParser:
-
-    def __init__(self, target_text):
-        self.target_text = target_text
-
-    def parse(self):
-        """
-        The result of parsing should contain
-        1. primary search
-        2. secondary search
-        3. tertiary search
-        4. search type
-        5. hashed parse
-        :return:
-        """
-        pass
-
-    def has_probability(self):
-        pass
+from src.parsers.short_parsers import *
 
 
 class ParserController:
 
     def __init__(self):
         self.handler = ParserHandler()
-        self.re = SimpleRelationsExtractor()
-        self.domain = None
+        self.context = {}
 
     def execute(self, domain_id):
-        self.domain = self.handler.get_domain(domain_id)
-        logging.info("Start parsing of domain {}".format(self.domain))
+        self.context['domain'] = self.handler.get_domain(domain_id)
+        logging.info("Start parsing of domain {}".format(self.context['domain']))
         bodies = self.handler.get_domain_bodies_by_id(domain_id)
 
         for body in bodies:
@@ -46,25 +25,36 @@ class ParserController:
 
             # parsing
             candidates = self._parse_candidate_text(page_source)
-            self._parse_candidate_type(candidates)
+            candidates = self._parse_candidate_type(candidates)
 
-            anchor_text_candidates = self._parse_anchor_text(candidates)
-            short_text_candidates = self._parse_short_text(candidates)
-            long_text_candidates = self._parse_long_text(candidates)
+            for candidate in candidates:
 
-            # storage
-            for anchor in anchor_text_candidates:
-                self.handler.insert_anchor(anchor)
+                for parser_name in selected_parsers:
+                    result = self.string_to_class(parser_name)(candidate, self.context).execute()
+                    print(result)
+                    # insert into db
+            break
 
-            for short in short_text_candidates:
-                self.handler.insert_short(short)
-
-            for long in long_text_candidates:
-                self.handler.insert_long(long)
-
-        self.handler.commit()
+        #     short_text_candidates = self._parse_short_text(candidates)
+        #     long_text_candidates = self._parse_long_text(candidates)
+        #
+        #     # storage
+        #     for anchor in anchor_text_candidates:
+        #         self.handler.insert_anchor(anchor)
+        #
+        #     for short in short_text_candidates:
+        #         self.handler.insert_short(short)
+        #
+        #     for long in long_text_candidates:
+        #         self.handler.insert_long(long)
+        #
+        # self.handler.commit()
 
         logging.info("Parsing of domain {} complete".format(domain_id))
+
+    @staticmethod
+    def string_to_class(parser):
+        return eval(parser)
 
     def _parse_candidate_text(self, page_source):
         """
@@ -100,15 +90,6 @@ class ParserController:
                 candidate.type = 'long'
 
         return candidates
-
-    def _parse_anchor_text(self, candidates):
-        result = []
-        for candidate in candidates:
-            if candidate.type == 'anchor':
-                direction = self.complete_link(candidate.analysed_html['href'])
-                result.append(AnchorText(direction=direction, parent_object=candidate))
-
-        return result
 
     def _parse_short_text(self, candidates):
         """
@@ -250,12 +231,6 @@ class ParserController:
                 return False
         except ZeroDivisionError:
             return False
-
-    def complete_link(self, link):
-        if link[:4] != "http":
-            return self.domain + link
-        else:
-            return link
 
     @staticmethod
     def is_anchor_text(candidate):

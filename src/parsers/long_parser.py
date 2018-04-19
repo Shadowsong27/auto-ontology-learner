@@ -1,7 +1,7 @@
 import logging
 
 from nltk.corpus import gutenberg
-from src.common.constants import NGRAM_UPPER_THRESHOLD
+from src.common.constants import NGRAM_UPPER_THRESHOLD, NOUN_PHRASE_THRESHOLD, VERB_PHRASE_THRESHOLD
 from src.common.model import Keyword
 from src.common.handler import PosPatternHandler
 from src.common.utils import *

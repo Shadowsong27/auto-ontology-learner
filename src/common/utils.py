@@ -29,3 +29,31 @@ def build_clean_soup(body):
     for script in soup("script"):
         script.decompose()
     return soup
+
+
+class BaseParser:
+
+    def __init__(self, candidate, context=None):
+        self.candidate = candidate
+        self.context = context
+
+    def execute(self):
+        if self._has_probability() > 0.5:
+            return self._parse()
+        else:
+            return None
+
+    def _parse(self):
+        """
+        The result of parsing should contain
+        1. primary search
+        2. secondary search
+        3. tertiary search
+        4. search type
+        5. hashed parse
+        :return:
+        """
+        raise NotImplementedError
+
+    def _has_probability(self):
+        raise NotImplementedError

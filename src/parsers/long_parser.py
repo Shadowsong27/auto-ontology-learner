@@ -7,6 +7,40 @@ from src.common.handler import PosPatternHandler
 from src.common.utils import *
 
 
+def _parse_long_text(self, candidates):
+    """This section will contain the exact parsing logic for relation, a relation is counted as an attribute
+    similar to the href value in anchor text
+
+
+    1. text
+    2. analysed_html
+    3. type
+    4. object 1 (applicable for search)
+    5. object 2 (applicable for search)
+    6. relation (applicable for search)
+
+    """
+    result = []
+
+    for candidate in candidates:
+        if candidate.type == 'long':
+            relations = self.re.generate_relations(candidate.text)
+
+            for relation in relations:
+                primary, secondary, verb, sentence = relation
+                long_text = LongText(
+                    primary_noun=primary,
+                    secondary_noun=secondary,
+                    verb=verb,
+                    parent_object=candidate,
+                    sentence=sentence
+                )
+
+                result.append(long_text)
+
+    return result
+
+
 class PosPatternExtractor:
     """
     This class handles the statistical calculation of POS taggers

@@ -30,23 +30,41 @@
   <body>
 
     <div id="h">
-      <div class="logo">BLACKTIE.CO</div>
-      <div class="social hidden-xs">
-        <a href="#"><i class="ion-social-twitter"></i></a>
-        <a href="#"><i class="ion-social-instagram"></i></a>
-        <a href="#"><i class="ion-social-facebook"></i></a>
-      </div>
       <div class="container">
         <div class="row">
           <div class="col-md-8 col-md-offset-2 centered">
-            <h1>Welcome to our new app site.<br/>Sign up now & prepare to enjoy our service.</h1>
+            <h1>Welcome to demo.<br/>Please enter your search string.</h1>
             <div class="mtb">
-              <form role="form" action="register.php" method="post" enctype="plain"> 
-                <input type="email" name="email" class="subscribe-input" placeholder="Enter your e-mail address..." required>
-                <button class='btn btn-conf btn-green' type="submit">Sart your free trial</button>
+
+              <form role="form" action="register.php" method="post" enctype="plain">
+
+                <div class="form-group row">
+                  <div class="col-xs-3">
+                    <label for="ex1">Object Type</label>
+                    <select id="ex1" name="type" class="form-control input-sm search-select" required="required">
+                      <option value="long">long</option>
+                    <option value="food">food</option>
+                    <option value="address">address</option>
+                    <option value="users">general</option>
+                </select>
+                  </div>
+                  <div class="col-xs-6">
+                    <label for="ex2">Search String</label>
+                    <input class="form-control" id="ex2" type="text" placeholder="Enter your e-mail address..." required>
+                  </div>
+                  <div class="col-xs-3">
+                    <label for="ex3">Submit</label>
+                    <input class="form-control" id="ex3" type="submit">
+
+                  </div>
+                </div>
+
+
+                <br>
+
               </form>
+
             </div><!--/mt-->
-            <h6>30 DAY FREE TRIAL - NO CREDIT CARD NEEDED.</h6>
           </div>
         </div><!--/row-->
       </div><!--/container-->
@@ -54,17 +72,15 @@
 
     <div class="container ptb">
       <div class="row">
-        <div class="col-md-6">
-          <h2>All the features you want in this kind of apps you'll got it here.</h2>
-          <p class="mt">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.</p>
-          <p class="store">
-            <a href="#"><img src="../static/assets/img/app-store.png" height="50" alt=""></a>
-            <a href="#"><img src="../static/assets/img/google-play.png" height="50" alt=""></a>
+        <div class="col-md-12">
+          <h2>Query Result</h2>
+          <p class="mt">
+            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
+            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
+            when an unknown printer took a galley of type and scrambled it to make a type specimen book.
           </p>
         </div>
-        <div class="col-md-6">
-          <img src="../static/assets/img/phone.png" class="img-responsive mt" alt="">
-        </div>
+
       </div><!--/row-->
     </div><!--/container-->
 

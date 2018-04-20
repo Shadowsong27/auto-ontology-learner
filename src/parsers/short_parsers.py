@@ -151,5 +151,18 @@ class CopyrightParser(BaseShortParser):
             return False
 
 
+class FoodParser(BaseShortParser):
+
+    def _parse(self):
+        unit = KnowledgeUnit(
+            search_type='short',
+            p_search='copyright',
+            s_search=self.candidate.text,
+            parsed_data=self.candidate.text,
+            original_content=self.candidate.text
+        )
+        return unit
+
+
 
 

@@ -1,7 +1,4 @@
-import logging
-
 from config import basic_short_parsers, basic_long_parsers
-from src.common.utils import build_clean_soup, tag, remove_punctuation
 from src.common.handler import ParserHandler
 from src.parsers.short_parsers import *
 from src.parsers.long_parser import *
@@ -26,7 +23,6 @@ class ParserController:
             candidates = self._parse_candidate_type(candidates)
 
             for candidate in candidates:
-
                 if candidate.type == 'short':
                     for parser_name in basic_short_parsers:
                         result = self._string_to_class(parser_name)(candidate, self.context).execute()
@@ -34,8 +30,9 @@ class ParserController:
                             self.handler.insert_knowledge(result)
                 else:
                     for parser_name in basic_long_parsers:
-                        # insert into db
-                        pass
+                        result = self._string_to_class(parser_name)(candidate, self.context).execute()
+                        for item in result:
+                            self.handler.insert_knowledge(item)
 
             self.handler.commit()
 
@@ -83,7 +80,7 @@ class ParserController:
 
         diversity_of_tags = len(list_of_tags)
 
-        if diversity_of_tags >= 5:  # more likely to be a sentence if the diversity of tags are high
+        if diversity_of_tags >= 7:  # more likely to be a sentence if the diversity of tags are high
             return False
         else:
             return True

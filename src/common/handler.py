@@ -177,3 +177,4 @@ class ParserHandler(BaseHandler):
         hasher = blake2b(digest_size=32)
         hasher.update(original_str.encode("utf-8"))
         return hasher.hexdigest()
+

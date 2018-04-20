@@ -2,52 +2,43 @@ import logging
 
 from nltk.corpus import gutenberg
 from src.common.constants import NGRAM_UPPER_THRESHOLD, NOUN_PHRASE_THRESHOLD, VERB_PHRASE_THRESHOLD
-from src.common.model import Keyword
+from src.common.model import Keyword, KnowledgeUnit
 from src.common.handler import PosPatternHandler
 from src.common.utils import *
 
 
-class BasicGeneralTextParser(BaseShortParser):
+class BasicGeneralTextParser(BaseLongParser):
 
-    def _parse(self):
-        pass
+    def execute(self):
+        result = []
+        relation_extractor = SimpleRelationsExtractor()
+        relations = relation_extractor.generate_relations(self.candidate.text)
+        for relation in relations:
+            primary, secondary, verb, sentence = relation
 
-    def _has_probability(self):
-        pass
+            primary = primary.text
 
+            if secondary is None:
+                secondary = None
+            else:
+                secondary = secondary.text
 
-def _parse_long_text(self, candidates):
-    """This section will contain the exact parsing logic for relation, a relation is counted as an attribute
-    similar to the href value in anchor text
+            if verb is None:
+                verb = None
+            else:
+                verb = verb.text
 
+            unit = KnowledgeUnit(
+                search_type='long',
+                p_search=primary,
+                s_search=secondary,
+                t_search=verb,
+                parsed_data=sentence,
+                original_content=self.candidate.text
+            )
+            result.append(unit)
 
-    1. text
-    2. analysed_html
-    3. type
-    4. object 1 (applicable for search)
-    5. object 2 (applicable for search)
-    6. relation (applicable for search)
-
-    """
-    result = []
-
-    for candidate in candidates:
-        if candidate.type == 'long':
-            relations = self.re.generate_relations(candidate.text)
-
-            for relation in relations:
-                primary, secondary, verb, sentence = relation
-                long_text = LongText(
-                    primary_noun=primary,
-                    secondary_noun=secondary,
-                    verb=verb,
-                    parent_object=candidate,
-                    sentence=sentence
-                )
-
-                result.append(long_text)
-
-    return result
+        return result
 
 
 class PosPatternExtractor:

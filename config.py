@@ -1,3 +1,3 @@
-selected_short_parsers = ['AnchorParser']
+selected_short_parsers = ['ContactParser']
 selected_long_parsers = []
 

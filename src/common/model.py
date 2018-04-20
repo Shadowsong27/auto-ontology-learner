@@ -55,3 +55,13 @@ class LongText(BaseModel):
         self.verb = verb
         self.sentence = sentence
 
+
+class KnowledgeUnit(BaseModel):
+
+    def __init__(self, search_type, p_search, s_search=None, t_search=None, parsed_data=None, original_content=None):
+        self.search_type = search_type
+        self.p_search = p_search
+        self.s_search = s_search
+        self.t_search = t_search
+        self.parsed_data = parsed_data
+        self.original_content = original_content

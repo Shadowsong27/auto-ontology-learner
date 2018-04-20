@@ -30,13 +30,13 @@ class ParserController:
                 if candidate.type == 'short':
                     for parser_name in selected_short_parsers:
                         result = self._string_to_class(parser_name)(candidate, self.context).execute()
-                        print(result)
+                        if result is not None:
+                            print(result)
                         # insert into db
                 else:
                     for parser_name in selected_long_parsers:
                         # insert into db
                         pass
-            break
 
             # self.handler.commit()
 

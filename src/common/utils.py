@@ -38,7 +38,7 @@ class BaseParser:
         self.context = context
 
     def execute(self):
-        if self._has_probability() > 0.5:
+        if self._has_probability():
             return self._parse()
         else:
             return None

@@ -1,11 +1,11 @@
 import natty
 import usaddress
 
-from src.common.utils import BaseParser, remove_punctuation
+from src.common.utils import BaseShortParser, remove_punctuation
 from src.common.model import *
 
 
-class LinkParser(BaseParser):
+class LinkParser(BaseShortParser):
 
     def _parse(self):
         direction = self._complete_link(self.candidate.analysed_html['href'])
@@ -31,7 +31,7 @@ class LinkParser(BaseParser):
             return link
 
 
-class TimeParser(BaseParser):
+class TimeParser(BaseShortParser):
 
     def _parse(self):
         dp = natty.DateParser(self.candidate.text)
@@ -67,7 +67,7 @@ class TimeParser(BaseParser):
         return False
 
 
-class AddressParser(BaseParser):
+class AddressParser(BaseShortParser):
 
     def _parse(self):
         unit = KnowledgeUnit(
@@ -88,7 +88,7 @@ class AddressParser(BaseParser):
             return False
 
 
-class ContactParser(BaseParser):
+class ContactParser(BaseShortParser):
 
     def _parse(self):
         if "p" in self.candidate.text.lower():
@@ -132,7 +132,7 @@ class ContactParser(BaseParser):
             return False
 
 
-class CopyrightParser(BaseParser):
+class CopyrightParser(BaseShortParser):
 
     def _parse(self):
         unit = KnowledgeUnit(

@@ -1,3 +1,6 @@
-selected_short_parsers = ['ContactParser']
-selected_long_parsers = []
+basic_short_parsers = ['ContactParser', 'LinkParser', 'AddressParser', 'TimeParser', 'CopyrightParser']
+basic_long_parsers = []
+
+
+
 

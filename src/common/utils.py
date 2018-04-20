@@ -31,7 +31,7 @@ def build_clean_soup(body):
     return soup
 
 
-class BaseParser:
+class BaseShortParser:
 
     def __init__(self, candidate, context=None):
         self.candidate = candidate
@@ -57,3 +57,13 @@ class BaseParser:
 
     def _has_probability(self):
         raise NotImplementedError
+
+
+class BaseLongParser:
+
+    def __init__(self, candidate, context=None):
+        self.candidate = candidate
+        self.context = context
+
+    def execute(self):
+        pass

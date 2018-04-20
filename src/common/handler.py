@@ -147,68 +147,22 @@ class ParserHandler(BaseHandler):
         )
         return self.cursor.fetchone()[0]
 
-    def insert_anchor(self, anchor):
+    def insert_knowledge(self, knowledge_unit):
         try:
             self.cursor.execute(
                 """
-                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, ParsedData, HashedParsed)
-                VALUES (%s, %s, %s, %s)
-                """, (
-                    "anchor",
-                    anchor.text,
-                    anchor.direction,
-                    self.get_hashed(anchor.direction)
-                )
-            )
-        except pymysql.err.IntegrityError:
-            pass
-        except pymysql.err.InternalError:
-            pass
-        except pymysql.err.DataError:
-            pass
-
-    def insert_short(self, short):
-        try:
-            self.cursor.execute(
-                """
-                INSERT INTO KnowledgeGraph (SearchType, PrimarySearch, SecondarySearch, ParsedData, HashedParsed)
-                VALUES (%s, %s, %s, %s, %s)
-                """, (
-                    "short",
-                    short.text,
-                    short.concept_type,
-                    short.text,
-                    self.get_hashed(short.text)
-                )
-            )
-        except pymysql.err.IntegrityError:
-            pass
-        except pymysql.err.InternalError:
-            pass
-        except pymysql.err.DataError:
-            pass
-
-    def insert_long(self, long):
-        if long.secondary_noun is None:
-            sec = None
-        else:
-            sec = long.secondary_noun.text
-
-        try:
-            self.cursor.execute(
-                """
-                INSERT INTO KnowledgeGraph 
+                INSERT INTO KnowledgeGraph
                   (SearchType, PrimarySearch, SecondarySearch, TertiarySearch,
                   ParsedData, OriginalContent, HashedParsed)
                 VALUES (%s, %s, %s, %s, %s, %s, %s)
                 """, (
-                    "long",
-                    long.primary_noun.text,
-                    sec,
-                    long.verb.text,
-                    None,
-                    long.sentence,
-                    self.get_hashed(long.sentence)
+                    knowledge_unit.search_type,
+                    knowledge_unit.p_search,
+                    knowledge_unit.s_search,
+                    knowledge_unit.t_search,
+                    knowledge_unit.parsed_data,
+                    knowledge_unit.original_content,
+                    self.get_hashed(knowledge_unit.original_content)
                 )
             )
         except pymysql.err.IntegrityError:

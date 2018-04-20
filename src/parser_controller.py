@@ -1,6 +1,6 @@
 import logging
 
-from config import selected_short_parsers, selected_long_parsers
+from config import basic_short_parsers, basic_long_parsers
 from src.common.utils import build_clean_soup, tag, remove_punctuation
 from src.common.handler import ParserHandler
 from src.parsers.short_parsers import *
@@ -28,17 +28,16 @@ class ParserController:
             for candidate in candidates:
 
                 if candidate.type == 'short':
-                    for parser_name in selected_short_parsers:
+                    for parser_name in basic_short_parsers:
                         result = self._string_to_class(parser_name)(candidate, self.context).execute()
                         if result is not None:
-                            print(result)
-                        # insert into db
+                            self.handler.insert_knowledge(result)
                 else:
-                    for parser_name in selected_long_parsers:
+                    for parser_name in basic_long_parsers:
                         # insert into db
                         pass
 
-            # self.handler.commit()
+            self.handler.commit()
 
         logging.info("Parsing of domain {} complete".format(domain_id))
 

@@ -7,6 +7,15 @@ from src.common.handler import PosPatternHandler
 from src.common.utils import *
 
 
+class BasicGeneralTextParser(BaseShortParser):
+
+    def _parse(self):
+        pass
+
+    def _has_probability(self):
+        pass
+
+
 def _parse_long_text(self, candidates):
     """This section will contain the exact parsing logic for relation, a relation is counted as an attribute
     similar to the href value in anchor text

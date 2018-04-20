@@ -3,6 +3,19 @@ import usaddress
 
 from src.common.utils import BaseShortParser, remove_punctuation
 from src.common.model import *
+from bs4 import BeautifulSoup
+
+
+with open(r'parsers/resources/foodlist.htm', 'r', encoding='iso-8859-1') as f:
+    page_source = f.read()
+    soup = BeautifulSoup(page_source, 'lxml')
+    tds = soup.find_all("td")
+
+    food_list = []
+    for td in tds[11:-9]:
+        food_list.extend(td.text.strip().split("\n"))
+
+    food_list = set(food_list)
 
 
 class LinkParser(BaseShortParser):
@@ -156,13 +169,22 @@ class FoodParser(BaseShortParser):
     def _parse(self):
         unit = KnowledgeUnit(
             search_type='short',
-            p_search='copyright',
-            s_search=self.candidate.text,
+            p_search='food',
+            s_search=self.food,
             parsed_data=self.candidate.text,
             original_content=self.candidate.text
         )
         return unit
 
+    def _has_probability(self):
+        candidate_tokens = set(self.candidate.text.lower().split(" "))
+        if len(food_list.intersection(candidate_tokens)) > 0:
+
+            self.food = " ".join(food_list.intersection(candidate_tokens))
+
+            return True
+
+        return False
 
 
 

@@ -152,10 +152,11 @@ class ParserHandler(BaseHandler):
             self.cursor.execute(
                 """
                 INSERT INTO KnowledgeGraph
-                  (SearchType, PrimarySearch, SecondarySearch, TertiarySearch,
+                  (DomainID, SearchType, PrimarySearch, SecondarySearch, TertiarySearch,
                   ParsedData, OriginalContent, HashedParsed)
-                VALUES (%s, %s, %s, %s, %s, %s, %s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
                 """, (
+                    knowledge_unit.domain_id,
                     knowledge_unit.search_type,
                     knowledge_unit.p_search,
                     knowledge_unit.s_search,
@@ -171,6 +172,14 @@ class ParserHandler(BaseHandler):
             pass
         except pymysql.err.DataError:
             pass
+
+    def get_search_result_by_domain_id(self, search_string, domain_id):
+        self.cursor.execute(
+            """
+            
+            
+            """
+        )
 
     @staticmethod
     def get_hashed(original_str):

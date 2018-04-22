@@ -23,6 +23,7 @@ class LinkParser(BaseShortParser):
     def _parse(self):
         direction = self._complete_link(self.candidate.analysed_html['href'])
         unit = KnowledgeUnit(
+            domain_id=self.context['domain_id'],
             search_type='short',
             p_search='link',
             s_search=self.candidate.text,
@@ -49,6 +50,7 @@ class TimeParser(BaseShortParser):
     def _parse(self):
         dp = natty.DateParser(self.candidate.text)
         unit = KnowledgeUnit(
+            domain_id=self.context['domain_id'],
             search_type='short',
             p_search='date',
             s_search=self.candidate.text,
@@ -84,6 +86,7 @@ class AddressParser(BaseShortParser):
 
     def _parse(self):
         unit = KnowledgeUnit(
+            domain_id=self.context['domain_id'],
             search_type='short',
             p_search='address',
             s_search=self.candidate.text,
@@ -106,6 +109,7 @@ class ContactParser(BaseShortParser):
     def _parse(self):
         if "p" in self.candidate.text.lower():
             return KnowledgeUnit(
+                domain_id=self.context['domain_id'],
                 search_type='short',
                 p_search='phone',
                 s_search=self.candidate.text,
@@ -114,6 +118,7 @@ class ContactParser(BaseShortParser):
             )
         elif "f" in self.candidate.text.lower():
             return KnowledgeUnit(
+                domain_id=self.context['domain_id'],
                 search_type='short',
                 p_search='fax',
                 s_search=self.candidate.text,
@@ -122,6 +127,7 @@ class ContactParser(BaseShortParser):
             )
         else:
             return KnowledgeUnit(
+                domain_id=self.context['domain_id'],
                 search_type='short',
                 p_search='contact',
                 s_search=self.candidate.text,
@@ -149,6 +155,7 @@ class CopyrightParser(BaseShortParser):
 
     def _parse(self):
         unit = KnowledgeUnit(
+            domain_id=self.context['domain_id'],
             search_type='short',
             p_search='copyright',
             s_search=self.candidate.text,
@@ -168,6 +175,7 @@ class FoodParser(BaseShortParser):
 
     def _parse(self):
         unit = KnowledgeUnit(
+            domain_id=self.context['domain_id'],
             search_type='short',
             p_search='food',
             s_search=self.food,

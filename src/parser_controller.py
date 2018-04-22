@@ -12,6 +12,7 @@ class ParserController:
 
     def execute(self, domain_id):
         self.context['domain'] = self.handler.get_domain(domain_id)
+        self.context['domain_id'] = domain_id
         logging.info("Start parsing of domain {}".format(self.context['domain']))
         bodies = self.handler.get_domain_bodies_by_id(domain_id)
 

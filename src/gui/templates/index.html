@@ -36,28 +36,24 @@
             <h1>Welcome to demo.<br/>Please enter your search string.</h1>
             <div class="mtb">
 
-              <form role="form" action="register.php" method="post" enctype="plain">
 
-                <div class="form-group row">
-                  <div class="col-xs-3">
-                    <label for="ex1">Object Type</label>
-                    <select id="ex1" name="type" class="form-control input-sm search-select" required="required">
-                      <option value="long">long</option>
-                    <option value="food">food</option>
-                    <option value="address">address</option>
-                    <option value="users">general</option>
-                </select>
-                  </div>
-                  <div class="col-xs-6">
+              <br>
+              <br>
+              <br>
+
+              <form role="form" action="{{ url_for('index') }}" method="post">
+                <div class="col-xs-2">
                     <label for="ex2">Search String</label>
-                    <input class="form-control" id="ex2" type="text" placeholder="Enter your e-mail address..." required>
+                    <input name='domain_input' class="form-control" id="ex1" type="text" placeholder="domain id" required>
                   </div>
-                  <div class="col-xs-3">
+                  <div class="col-xs-8">
+                    <label for="ex2">Search String</label>
+                    <input name='search_input' class="form-control" id="ex2" type="text" placeholder="search string" required>
+                  </div>
+                  <div class="col-xs-2">
                     <label for="ex3">Submit</label>
                     <input class="form-control" id="ex3" type="submit">
-
                   </div>
-                </div>
 
 
                 <br>
@@ -74,13 +70,8 @@
       <div class="row">
         <div class="col-md-12">
           <h2>Query Result</h2>
-          <p class="mt">
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry.
-            Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,
-            when an unknown printer took a galley of type and scrambled it to make a type specimen book.
-          </p>
         </div>
-
+        {% block content %}{% endblock %}
       </div><!--/row-->
     </div><!--/container-->
 

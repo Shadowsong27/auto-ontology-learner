@@ -1,19 +1,17 @@
 from src.gui import app
-from flask import render_template
+from flask import render_template, request
+from src.common.handler import ParserHandler
 
 
 @app.route('/')
-@app.route('/index')
+@app.route('/index', methods=["GET", "POST"])
 def index():
-    # user = {'username': 'Miguel'}
-    # posts = [
-    #     {
-    #         'author': {'username': 'John'},
-    #         'body': 'Beautiful day in Portland!'
-    #     },
-    #     {
-    #         'author': {'username': 'Susan'},
-    #         'body': 'The Avengers movie was so cool!'
-    #     }
-    # ]
+    if request.method == 'POST':
+        search_string = request.form['search_input']
+        domain_id = request.form['domain_input']
+        # get result
+        # render template
+    elif request.method == 'GET':
+        default_string = ""
+
     return render_template('index.html')

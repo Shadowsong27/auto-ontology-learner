@@ -29,6 +29,7 @@ class BasicGeneralTextParser(BaseLongParser):
                 verb = verb.text
 
             unit = KnowledgeUnit(
+                domain_id=self.context['domain_id'],
                 search_type='long',
                 p_search=primary,
                 s_search=secondary,

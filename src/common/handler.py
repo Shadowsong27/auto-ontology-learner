@@ -176,10 +176,13 @@ class ParserHandler(BaseHandler):
     def get_search_result_by_domain_id(self, search_string, domain_id):
         self.cursor.execute(
             """
-            
-            
-            """
+            SELECT SearchType, PrimarySearch, SecondarySearch, TertiarySearch,
+            ParsedData, OriginalContent
+            FROM KnowledgeGraph
+            WHERE DomainID=%s
+            """, (domain_id, )
         )
+        return self.cursor.fetchall()
 
     @staticmethod
     def get_hashed(original_str):

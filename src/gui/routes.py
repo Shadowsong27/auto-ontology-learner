@@ -9,9 +9,10 @@ def index():
     if request.method == 'POST':
         search_string = request.form['search_input']
         domain_id = request.form['domain_input']
-        # get result
-        # render template
+        records = ParserHandler().get_search_result_by_domain_id(search_string=search_string, domain_id=domain_id)
     elif request.method == 'GET':
-        default_string = ""
+        records = []
+    else:
+        records = []
 
-    return render_template('index.html')
+    return render_template('query_result.html', records=records)
